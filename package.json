@@ -1,0 +1,6 @@
+{
+	"name": "skillcamp-bots",
+	"version": "1.0.0",
+	"description": "The bots for SkillCamp Discord servers",
+	"main": "index.js",
+}

@@ -1,0 +1,24 @@
+config.json
+node_modules
+.env
+._*
+.DS_Store
+.git
+.eslintrc.json
+.gitattributes
+discord link.txt
+logs
+secrets.priv
+Channel IDs.md
+.eslintrc.json
+single copy.js
+deploy-commands copy.js
+.vscode
+credentials.json
+hide/*
+client_secret.json
+bot.py
+guildData.json
+hidden
+/data/*
+proccess.json
