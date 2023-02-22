@@ -191,7 +191,7 @@ module.exports = {
 			if (text === "rubberducks") {
 				embed = new EmbedBuilder()
 					.setTitle(`Rubber Ducks`)
-					.setDescription(`Rubber Ducks is a place where computer programmers gather from all over the world to work independently. We join here regularly to help each other as we run into issues and need help.\n\nThe Rubber Ducks is open 24/7 even if the event isn't running.\n\nUse the <#1035021974482735124> channel if you want help or want to give help. If you'd prefer to work in silence, either use Discord's deafen function or move to <#1035636906442100756>.`)
+					.setDescription(`Rubber Ducks is a place where computer programmers gather from all over the world to work independently. We join here regularly to help each other as we run into issues and need help.\n\nThe Rubber Ducks is open 24/7 even if the event isn't running. When an event is showing in Discord, it means that at least one person is guarenteed to be in the voice channel.\n\nUse the <#1035021974482735124> channel if you want help or want to give help. If you'd prefer to work in silence, either use Discord's deafen function or move to <#1035636906442100756>.\n\n*Why is this channel called Rubber Ducks?*\nThe Rubber Ducks is named after a programming technique called Rubber Duck Debugging. The idea is that you explain your problem to a rubber duck, and in the process you find the solution.`)
 					.setColor('#00ff00')
 					.setImage('https://cdn.discordapp.com/attachments/1031273913516306542/1044304711005778041/rdcc-wide.png')
 					.setThumbnail('https://cdn.discordapp.com/attachments/1031273913516306542/1077196485483040818/codecampround.png');
