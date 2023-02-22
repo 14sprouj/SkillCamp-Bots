@@ -1,3 +1,6 @@
 # Table of contents
 
-* [Page 1](README.md)
+* [README](README.md)
+* [SkillCoin Bot](skillcoin-bot.md)
+* [SkillCamp Bot](skillcamp-bot.md)
+* [CampMaster Bot](campmaster-bot.md)
