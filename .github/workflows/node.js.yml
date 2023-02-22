@@ -27,5 +27,5 @@ jobs:
     - run: npm ci
     - run: npm run register-all
       # If github.actor is not gitbook
-      if: contains(github.actor, 'gitbook') = false
+      if: contains(github.actor, 'gitbook') == false
     - run: npm run test
