@@ -40,7 +40,6 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { Client, GatewayIntentBits, Collection, Routes } = require('discord.js');
 const { REST } = require('@discordjs/rest');
-const { guildData } = require('./data/guildData.json');
 const rest = new REST({ version: '10' }).setToken(process.env.CampMasterToken);
 let i, commands, commandsPath, commandFiles, file, command, filePath, filePaths;
 
