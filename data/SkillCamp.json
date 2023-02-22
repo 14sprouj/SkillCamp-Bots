@@ -1,0 +1,30 @@
+{
+    "Discord": {
+        "ScriptCamp": {
+            "MemberCount": 0
+        },
+        "CodeCamp": {
+            "MemberCount": 72
+        },
+        "ToonCamp": {
+            "MemberCount": 0
+        },
+        "FilmCamp": {
+            "MemberCount": 0
+        },
+        "CampMaster": {
+            "MemberCount": 7
+        }
+    },
+    "platformStats": {
+        "YouTube": {},
+        "Facebook": {},
+        "Twitter": {},
+        "Instagram": {},
+        "TikTok": {},
+        "Meetup": {},
+        "Quora": {},
+        "Reddit": {},
+        "LinkedIn": {}
+    }
+}

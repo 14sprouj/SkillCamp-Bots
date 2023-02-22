@@ -1,0 +1,636 @@
+{
+	"guildData": {
+		"BlazingBotServer": {
+			"guildId": "1059244615363985458"
+		},
+		"BlazingWheelsCommunity": {
+			"guildId": "905953731663769740",
+			"channels": {
+				"welcome": {
+					"channelName": "welcome-and-rules",
+					"channelID": "905953732238409729",
+					"type": "text",
+					"category": "Information"
+				},
+				"announcements": {
+					"channelName": "announcements",
+					"channelID": "905953732238409730",
+					"type": "text",
+					"category": "Information"
+				},
+				"roles": {
+					"channelName": "roles",
+					"channelID": "906291740259000340",
+					"type": "text",
+					"category": "Information"
+				},
+				"map": {
+					"channelName": "map",
+					"channelID": "1019319646849085491",
+					"type": "text",
+					"category": "Information"
+				},
+				"resources": {
+					"channelName": "resources",
+					"channelID": "905953732238409731",
+					"type": "text",
+					"category": "Information"
+				},
+				"general": {
+					"channelName": "general",
+					"channelID": "905953732238409734",
+					"type": "text",
+					"category": "General"
+				},
+				"music": {
+					"channelName": "music",
+					"channelID": "1022286181939028079",
+					"type": "forum",
+					"category": "General"
+				},
+				"bot-commands": {
+					"channelName": "bot-commands",
+					"channelID": "1021886237516247182",
+					"type": "text",
+					"category": "Text Channels"
+				},
+				"suggestions": {
+					"channelName": "suggestions",
+					"channelID": "1022141807863267409",
+					"type": "text",
+					"category": "Text Channels"
+				},
+				"stage": {
+					"channelName": "stage",
+					"channelID": "906225561528061962",
+					"type": "stage",
+					"category": "Voice Channels"
+				},
+				"lounge": {
+					"channelName": "lounge",
+					"channelID": "905953732662005811",
+					"type": "voice",
+					"category": "Voice Channels"
+				},
+				"meeting-room": {
+					"channelName": "meeting-room",
+					"channelID": "905953732662005812",
+					"type": "voice",
+					"category": "Voice Channels"
+				},
+				"solo-vent": {
+					"channelName": "solo-vent",
+					"channelID": "920979296821055508",
+					"type": "voice",
+					"category": "Voice Channels"
+				},
+				"mod-rules": {
+					"channelName": "mod-rules",
+					"channelID": "1026583409625137244",
+					"type": "text",
+					"category": "Moderator"
+				},
+				"modBotCmds": {
+					"channelName": "mod-bot-cmds",
+					"channelID": "906287955709161502",
+					"type": "text",
+					"category": "Moderator"
+				},
+				"logs": {
+					"channelName": "logs",
+					"channelID": "1001094479241027606",
+					"type": "text",
+					"category": "Moderator"
+				},
+				"members": {
+					"channelID": "945046098546950244",
+					"type": "voice",
+					"category": "Stats",
+					"categoryID": "945046097586434139"
+				},
+				"humans": {
+					"channelID": "1010897813309247579",
+					"type": "voice",
+					"category": "Stats",
+					"categoryID": "945046097586434139"
+				},
+				"bots": {
+					"channelID": "1027420128045973555",
+					"type": "voice",
+					"category": "Stats",
+					"categoryID": "945046097586434139"
+				},
+				"channels": {
+					"channelID": "1027419607440564235",
+					"type": "voice",
+					"category": "Stats",
+					"categoryID": "945046097586434139"
+				}
+			},
+			"roles": [
+				{
+					"roleName": "Boss",
+					"roleID": "906223913263071272",
+					"color": "#e63a1a",
+					"permissions": "ADMINISTRATOR"
+				},
+				{
+					"roleName": "Admin",
+					"roleID": "906223988546613278",
+					"color": "#e63a1a",
+					"permissions": "ADMINISTRATOR"
+				},
+				{
+					"roleName": "Moderator",
+					"roleID": "906224417959460875",
+					"color": "#ff7f14",
+					"permissions": "ADMINISTRATOR"
+				},
+				{
+					"roleName": "Leaders",
+					"roleID": "906288413630681169",
+					"color": "#f21515",
+					"permissions": ""
+				}
+			]
+		},
+		"SkillCamps": {
+			"guildIDs": [
+				"1031273912203477002",
+				"1039918797127176192",
+				"745486556315517038",
+				"1014566948362793050",
+				"1014949990461870222",
+				"1014950327767814144",
+				"1031284104680964207",
+				"1031272491089416263"
+			],
+			"CampMaster": {
+				"guildId": "1039918797127176192",
+				"channels": {
+					"tagYourself": {
+						"channelName": "tag-yourself",
+						"channelID": "1069304034781040690"
+					}
+				}
+			},
+			"ScriptCamp": {
+				"guildId": "745486556315517038",
+				"channels": {
+					"writersRoomVC": {
+						"channelName": "Writers Room (chat)",
+						"channelID": "908050437813436466"
+					},
+					"writersRoomQuietVC": {
+						"channelName": "Writers Room (quiet)",
+						"channelID": "1026130321508401152"
+					},
+					"artistsRoomVC": {
+						"channelName": "Artists Room",
+						"channelID": "1026129849938620458"
+					},
+					"writersArtistsRoom": {
+						"channelName": "writers-artists-room",
+						"channelID": "908050391067938836"
+					}
+				}
+			},
+			"WordCamp": {
+				"guildId": "1014566948362793050",
+				"channels": {}
+			},
+			"FilmCamp": {
+				"guildId": "1014949990461870222",
+				"channels": {}
+			},
+			"CreatorCamp": {
+				"guildId": "1014950327767814144",
+				"channels": {}
+			},
+			"ToonCamp": {
+				"guildId": "1031284104680964207",
+				"channels": {
+					"writersRoomVC": {
+						"channelName": "Artists Room (chat)",
+						"channelID": "1031284107050745890"
+					},
+					"writersRoomQuietVC": {
+						"channelName": "Artists Room (quiet)",
+						"channelID": "1031284107050745891"
+					},
+					"writersArtistsRoom": {
+						"channelName": "artists-room",
+						"channelID": "1031284107050745887"
+					}
+				}
+			},
+			"CodeCamp": {
+				"guildId": "1031273912203477002",
+				"channels": {
+					"links": {
+						"channelName": "links-and-resources",
+						"channelID": "1036402643641311374",
+						"type": "0"
+					},
+					"bdBootcampChat": {
+						"channelName": "database-bootcamp-chat",
+						"channelID": "1031273917404434574",
+						"type": "0"
+					},
+					"labVideos": {
+						"channelName": "videos",
+						"channelID": "1031273917404434580",
+						"type": "0"
+					},
+					"announcements": {
+						"channelName": "announcements",
+						"channelID": "1035577218828603572",
+						"type": "5"
+					},
+					"coaching": {
+						"channelName": "coaching",
+						"channelID": "1031273917907730433",
+						"type": "0"
+					},
+					"aboutCamp": {
+						"channelName": "about-codecamp",
+						"channelID": "1031273914845909135",
+						"type": "0"
+					},
+					"petcamp": {
+						"channelName": "pet-camp",
+						"channelID": "1046522063822790696",
+						"type": "15"
+					},
+					"modChatVC": {
+						"channelName": "moderator-chat",
+						"channelID": "1031273914317418549",
+						"type": "2"
+					},
+					"adminChat": {
+						"channelName": "admin-chat",
+						"channelID": "1031273913067524147",
+						"type": "0"
+					},
+					"modBotCmds": {
+						"channelName": "mod-bots",
+						"channelID": "1031273914317418548",
+						"type": "0"
+					},
+					"design": {
+						"channelName": "design",
+						"channelID": "1031273914845909141",
+						"type": "0"
+					},
+					"databases": {
+						"channelName": "databases",
+						"channelID": "1035007145705472091",
+						"type": "0"
+					},
+					"introduceYourself": {
+						"channelName": "introduce-yourself",
+						"channelID": "1036076708014608384",
+						"type": "15"
+					},
+					"rubberDucksQuietVC": {
+						"channelName": "Rubber Ducks (quiet space)",
+						"channelID": "1035636906442100756",
+						"type": "2"
+					},
+					"distribution": {
+						"channelName": "distribution",
+						"channelID": "1031273915349217396",
+						"type": "0"
+					},
+					"flutter": {
+						"channelName": "flutter",
+						"channelID": "1035006942856368229",
+						"type": "0"
+					},
+					"smartHome": {
+						"channelName": "smart-home",
+						"channelID": "1052263467987521676",
+						"type": "0"
+					},
+					"eventsForum": {
+						"channelName": "events-and-activities",
+						"channelID": "1035221987737489408",
+						"type": "15"
+					},
+					"industryNews": {
+						"channelName": "industry-news",
+						"channelID": "1036680247673888899",
+						"type": "0"
+					},
+					"Workshop": {
+						"channelName": "Workshop",
+						"channelID": "1031273916196474946",
+						"type": "2"
+					},
+					"logs": {
+						"channelName": "logs",
+						"channelID": "1035992914427392113",
+						"type": "0"
+					},
+					"python": {
+						"channelName": "python",
+						"channelID": "1038944563122946208",
+						"type": "0"
+					},
+					"classAssignments": {
+						"channelName": "class-assignments",
+						"channelID": "1037904954507141252",
+						"type": "0"
+					},
+					"modChat": {
+						"channelName": "moderator-only",
+						"channelID": "1031273913067524149",
+						"type": "0"
+					},
+					"devEnvs": {
+						"channelName": "dev-envs",
+						"channelID": "1035006399912091729",
+						"type": "0"
+					},
+					"electronjs": {
+						"channelName": "electronjs",
+						"channelID": "1035006981125177344",
+						"type": "0"
+					},
+					"web": {
+						"channelName": "web",
+						"channelID": "1035006606599008316",
+						"type": "0"
+					},
+					"classesVideos": {
+						"channelName": "videos",
+						"channelID": "1044305089021624320",
+						"type": "0"
+					},
+					"vipMembersVC": {
+						"channelName": "VIP Members Chat",
+						"channelID": "1031273916989198416",
+						"type": "2"
+					},
+					"coachingChat": {
+						"channelName": "Coaching Chat",
+						"channelID": "1031273917907730435",
+						"type": "2"
+					},
+					"welcome": {
+						"channelName": "welcome",
+						"channelID": "1031273914317418552",
+						"type": "0"
+					},
+					"stats": {
+						"channelName": "stats",
+						"channelID": "1073213967251546222",
+						"type": "0"
+					},
+					"rules": {
+						"channelName": "rules",
+						"channelID": "1034959068793675817",
+						"type": "0"
+					},
+					"codingBootcamp": {
+						"channelName": "coding-bootcamp",
+						"channelID": "1034985309403881623",
+						"type": "0"
+					},
+					"android": {
+						"channelName": "android",
+						"channelID": "1035006916998475796",
+						"type": "0"
+					},
+					"techTalk": {
+						"channelName": "tech-talk",
+						"channelID": "1036679756864831568",
+						"type": "0"
+					},
+					"qotd": {
+						"channelName": "question-of-the-week",
+						"channelID": "1052397712248672306",
+						"type": "0"
+					},
+					"bootcampVC": {
+						"channelName": "Bootcamp",
+						"channelID": "1031273917404434577",
+						"type": "2"
+					},
+					"bootcampVideos": {
+						"channelName": "videos",
+						"channelID": "1031273917404434576",
+						"type": "0"
+					},
+					"labChat": {
+						"channelName": "computer-lab-chat",
+						"channelID": "1031273917404434579",
+						"type": "0"
+					},
+					"suspiciousAccount": {
+						"channelName": "suspicious-account",
+						"channelID": "1074299709453258802",
+						"type": "0"
+					},
+					"prospects": {
+						"channelName": "prospects",
+						"channelID": "1073622067196481667",
+						"type": "0"
+					},
+					"general": {
+						"channelName": "general-chat",
+						"channelID": "1046521838433476790",
+						"type": "0"
+					},
+					"classDiscussion": {
+						"channelName": "class-discussion",
+						"channelID": "1031273916989198415",
+						"type": "0"
+					},
+					"classroomVC": {
+						"channelName": "Classroom",
+						"channelID": "1031273914845909136",
+						"type": "2"
+					},
+					"teamHuddleVC": {
+						"channelName": "Team Huddle",
+						"channelID": "1031273916536193101",
+						"type": "2"
+					},
+					"nodejs": {
+						"channelName": "nodejs",
+						"channelID": "1035007072103825519",
+						"type": "0"
+					},
+					"workshop": {
+						"channelName": "workshop",
+						"channelID": "1031273916196474945",
+						"type": "0"
+					},
+					"instructorChat": {
+						"channelName": "instructor-chat",
+						"channelID": "1031273913516306543",
+						"type": "0"
+					},
+					"classMaterials": {
+						"channelName": "class-materials",
+						"channelID": "1031273913516306542",
+						"type": "0"
+					},
+					"lookingForDevs": {
+						"channelName": "looking-for-developers",
+						"channelID": "1031273915349217394",
+						"type": "0"
+					},
+					"schedule": {
+						"channelName": "schedule",
+						"channelID": "1031273914845909134",
+						"type": "0"
+					},
+					"linksForFuture": {
+						"channelName": "links-for-future",
+						"channelID": "1064173298541400114",
+						"type": "0"
+					},
+					"ios": {
+						"channelName": "ios",
+						"channelID": "1035006669341597696",
+						"type": "0"
+					},
+					"automod": {
+						"channelName": "automod",
+						"channelID": "1068728464808615986",
+						"type": "0"
+					},
+					"vipLounge": {
+						"channelName": "vip-lounge",
+						"channelID": "1031273916989198414",
+						"type": "0"
+					},
+					"vipAssignments": {
+						"channelName": "assignments",
+						"channelID": "1031273916989198412",
+						"type": "0"
+					},
+					"resources": {
+						"channelName": "resources",
+						"channelID": "1035006439908978729",
+						"type": "0"
+					},
+					"bootcampAssignments": {
+						"channelName": "assignments",
+						"channelID": "1031273917404434575",
+						"type": "0"
+					},
+					"partners": {
+						"channelName": "partners",
+						"channelID": "1035241926741471285",
+						"type": "0"
+					},
+					"rubberDucksVC": {
+						"channelName": "Rubber Ducks",
+						"channelID": "1035021974482735124",
+						"type": "2"
+					},
+					"codingChat": {
+						"channelName": "coding-chat",
+						"channelID": "1031273914845909138",
+						"type": "0"
+					},
+					"vipVideos": {
+						"channelName": "videos",
+						"channelID": "1031273916989198413",
+						"type": "0"
+					},
+					"marketing": {
+						"channelName": "marketing",
+						"channelID": "1031273913067524150",
+						"type": "0"
+					},
+					"eventsChat": {
+						"channelName": "events-chat",
+						"channelID": "1031273913516306545",
+						"type": "0"
+					},
+					"afkVC": {
+						"channelName": "AFK",
+						"channelID": "1036812208597905439",
+						"type": "2"
+					},
+					"collabs": {
+						"channelName": "collabs",
+						"channelID": "1066046014504583168",
+						"type": "15"
+					},
+					"botCommands": {
+						"channelName": "bot-commands",
+						"channelID": "1034985414223740949",
+						"type": "0"
+					},
+					"techSupport": {
+						"channelName": "tech-support",
+						"channelID": "1031273915915436047",
+						"type": "0"
+					},
+					"labVC": {
+						"channelName": "Computer Lab",
+						"channelID": "1031273917404434581",
+						"type": "2"
+					},
+					"discordjs": {
+						"channelName": "discordjs",
+						"channelID": "1035007021289844797",
+						"type": "0"
+					},
+					"prompts": {
+						"channelName": "prompts",
+						"channelID": "1038522395339792454",
+						"type": "15"
+					},
+					"todoList": {
+						"channelName": "todo-list",
+						"channelID": "1034975752745128020",
+						"type": "0"
+					},
+					"designTeamHuddle": {
+						"channelName": "design-team-huddle",
+						"channelID": "1035252007809851522",
+						"type": "0"
+					},
+					"techSupportVC": {
+						"channelName": "Tech Support",
+						"channelID": "1031273915915436050",
+						"type": "2"
+					},
+					"faq": {
+						"channelName": "faq",
+						"channelID": "1031273914845909133",
+						"type": "0"
+					},
+					"rubberDucksStage": {
+						"channelName": "rubber-ducks stage",
+						"channelID": "1072545867199959082",
+						"type": "13"
+					},
+					"tagYourself": {
+						"channelName": "tag-yourself",
+						"channelID": "1031273914317418553",
+						"type": "0"
+					}
+				},
+				"statsMsgs": {
+					"Users": "1073214204938567730",
+					"Members": "1073214253810602005"
+				}
+			},
+			"LingoCamp": {
+				"guildId": "1031272491089416263",
+				"channels": {}
+			},
+			"DesignCamp": {
+				"guildId": "1",
+				"channels": {}
+			}
+		}
+	}
+}
