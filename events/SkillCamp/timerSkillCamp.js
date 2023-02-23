@@ -41,7 +41,7 @@ const logger = winston.createLogger({
 
 const { EmbedBuilder } = require('discord.js');
 const { guildData } = require('../../data/guildData.json');
-const SkillCampGuildIds = guildData.SkillCamps.guildIDs;
+const SkillCampGuildIds = guildData.guildIDs;
 
 module.exports = {
 	name: 'ready',
@@ -49,6 +49,15 @@ module.exports = {
 	execute(client) {
 		let embed;
 		setInterval(() => {
+			// connect to the database
+			const connection = mysql.createConnection({
+				host: process.env.DB_HOST,
+				user: process.env.DB_USER,
+				password: process.env.DB_PASSWORD,
+				port: process.env.DB_PORT,
+				database: process.env.DB_NAME,
+			});
+
 			const d = new Date();
 			const date = d.getDate();
 			const day = d.getDay();
@@ -57,8 +66,8 @@ module.exports = {
 
 			if (minute == 55) {
 				// FIX Rubber Ducks message
-				const channel = client.guilds.cache.get(guildData.SkillCamps.CodeCamp.guildId).channels.cache.get(guildData.SkillCamps.CodeCamp.channels.rubberDucksVC.channelID);
-				const role = client.guilds.cache.get(guildData.SkillCamps.CodeCamp.guildId).roles.cache.find(role => role.name === 'Rubber Ducks Attendees');
+				const channel = client.guilds.cache.get(guildData.CodeCamp.guildId).channels.cache.get(guildData.CodeCamp.channels.rubberDucksVC.channelID);
+				const role = client.guilds.cache.get(guildData.CodeCamp.guildId).roles.cache.find(role => role.name === 'Rubber Ducks Attendees');
 				const membersWithRole = role.members.size;
 				if (membersWithRole > 1) {
 					try {
@@ -69,7 +78,7 @@ module.exports = {
 						} else if (random == 2) {
 							channel.send(`Rubber Ducks is a great place to get help with your projects. Unmute yourself and ask a question!\n:duck::duck::duck::duck::duck::duck:`);
 						} else if (random == 3) {
-							channel.send(`If you need some help just unmute yourself and ask a question! OR maybe you just want to talk. Join us in the main <#guildData.SkillCamps.CodeCamp.channels.rubberDucksVC.channelID> room.\n:duck::duck::duck::duck::duck::duck:`);
+							channel.send(`If you need some help just unmute yourself and ask a question! OR maybe you just want to talk. Join us in the main <#guildData.CodeCamp.channels.rubberDucksVC.channelID> room.\n:duck::duck::duck::duck::duck::duck:`);
 						}
 					} catch (error) {
 						console.error(error);
@@ -77,8 +86,8 @@ module.exports = {
 					}
 				}
 			} else if (minute == 10) {
-				const channel = client.guilds.cache.get(guildData.SkillCamps.CodeCamp.guildId).channels.cache.get(guildData.SkillCamps.CodeCamp.channels.rubberDucksVC.channelID);
-				const role = client.guilds.cache.get(guildData.SkillCamps.CodeCamp.guildId).roles.cache.find(role => role.name === 'Rubber Ducks Attendees');
+				const channel = client.guilds.cache.get(guildData.CodeCamp.guildId).channels.cache.get(guildData.CodeCamp.channels.rubberDucksVC.channelID);
+				const role = client.guilds.cache.get(guildData.CodeCamp.guildId).roles.cache.find(role => role.name === 'Rubber Ducks Attendees');
 				const membersWithRole = role.members.size;
 				if (membersWithRole > 1) {
 					try {
@@ -104,23 +113,14 @@ module.exports = {
 							.setColor('#01ee10')
 							.setTitle('Software & IDEs')
 							.setDescription(`Looking for an IDE? Here are some that we recommend.\n\n- **(Visual Studio Code)[https://code.visualstudio.com/]**\nThis is the most used code editor in the industry with thousands of extensions to make it suit your needs.\n- **(IntelliJ)[https://www.jetbrains.com/idea/]**\n- **(PyCharm)[https://www.jetbrains.com/pycharm/]**\n- **(WebStorm)[https://www.jetbrains.com/webstorm/]**\n- **(Android Studio)[https://developer.android.com/studio]**\nA must have for developing Android Apps. Comes with Android Emulator to allow you to run your apps as if running on an Android device. You'll be able to test the app runs as expected when dealing with sensors and other inputs.\n- (Eclipse)[https://www.eclipse.org/]\n`);
-						//client.guilds.cache.get(guildData.SkillCamps.CodeCamp.guildId).channels.cache.get(guildData.SkillCamps.CodeCamp.channels.generalchat.channelID).send({ embeds: [embed] });
-						client.guilds.cache.get(guildData.SkillCamps.CodeCamp.guildId).channels.cache.find(channel => channel.name === 'todo-list').send({ content: `<@708297454596128852> Finish this list!`, embeds: [embed] });
+						//client.guilds.cache.get(guildData.CodeCamp.guildId).channels.cache.get(guildData.CodeCamp.channels.generalchat.channelID).send({ embeds: [embed] });
+						client.guilds.cache.get(guildData.CodeCamp.guildId).channels.cache.find(channel => channel.name === 'todo-list').send({ content: `<@708297454596128852> Finish this list!`, embeds: [embed] });
 					} catch (error) {
 						console.error(error);
 						logger.error(error);
 					}
 				}
 			}
-
-			// connect to the database
-			const connection = mysql.createConnection({
-				host: process.env.DB_HOST,
-				user: process.env.DB_USER,
-				password: process.env.DB_PASSWORD,
-				port: process.env.DB_PORT,
-				database: process.env.DB_NAME,
-			});
 
 			// get date
 			const d2 = new Date();
@@ -313,7 +313,7 @@ module.exports = {
 					});
 				});
 			});
-			connection.end();
+			//connection.end();
 		}, 1000 * 60);
 	},
 };

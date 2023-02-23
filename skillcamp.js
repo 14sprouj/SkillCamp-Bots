@@ -42,7 +42,7 @@ const { Client, GatewayIntentBits, Collection, SlashCommandBuilder, Routes, Embe
 const { REST } = require('@discordjs/rest');
 const formatJsonFiles = require('format-json-files');
 const { guildData } = require('./data/guildData.json');
-const SkillCampGuildIds = guildData.SkillCamps.guildIDs;
+const SkillCampGuildIds = guildData.guildIDs;
 const { listeners } = require('node:process');
 const rest = new REST({ version: '10' }).setToken(process.env.SkillCampToken);
 let i;
@@ -150,7 +150,7 @@ client.on('interactionCreate', async interaction => {
 	// if in dm, return
 	if (!SkillCampGuildIds.includes(interaction.guildId) && interaction.guildId) {
 		interaction.reply({ content: 'This command is not available in this server.', ephemeral: true });
-		
+
 		return;
 	}
 

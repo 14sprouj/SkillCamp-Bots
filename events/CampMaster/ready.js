@@ -40,15 +40,20 @@ const logger = winston.createLogger({
 const { ActivityType } = require('discord.js');
 const { parse } = require('path');
 const { guildData } = require('../../data/guildData.json');
-const { SkillCampGuildIds } = guildData.SkillCamps.guildIDs;
+const { SkillCampGuildIds } = guildData.guildIDs;
 
 module.exports = {
 	name: 'ready',
 	once: true,
 	execute(client) {
 		const serverCount = parseInt(client.guilds.cache.size) - 1;
-		client.user.setActivity(`this server and ${serverCount} others`, { type: ActivityType.Watching });
-		client.user.setStatus('online');
+		if (env === 'prod') {
+			client.user.setActivity(`this server and ${serverCount} others`, { type: ActivityType.Watching });
+			client.user.setStatus('online');
+		} else {
+			client.user.setActivity(`this server and ${serverCount} others`, { type: ActivityType.Watching });
+			client.user.setStatus('dnd');
+		}
 		logger.info('Bot connected!');
 		console.log('Bot ready!');
 

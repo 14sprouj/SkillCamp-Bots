@@ -51,7 +51,7 @@ const SCOPES = ['https://www.googleapis.com/auth/calendar.readonly'];
 const TOKEN_PATH = path.join(process2.cwd(), 'token.json');
 const CREDENTIALS_PATH = path.join(process2.cwd(), 'credentials.json');
 const { guildData } = require('../../data/guildData.json');
-const SkillCampGuildIds = guildData.SkillCamps.guildIDs;
+const SkillCampGuildIds = guildData.guildIDs;
 
 module.exports = {
 	name: 'ready',

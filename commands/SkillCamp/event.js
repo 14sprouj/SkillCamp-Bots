@@ -51,7 +51,7 @@ const TOKEN_PATH = path.join(process2.cwd(), 'token.json');
 const CREDENTIALS_PATH = path.join(process2.cwd(), 'credentials.json');
 
 const { guildData } = require('../../data/guildData.json');
-const SkillCampGuildIds = guildData.SkillCamps.guildIDs;
+const SkillCampGuildIds = guildData.guildIDs;
 
 const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, GuildScheduledEvent, GuildScheduledEventManager } = require('discord.js');
 
@@ -71,17 +71,17 @@ module.exports = {
 			.setDescription('The event description')
 			.setRequired(true),
 		)
-	//	.addChannelOption(option => option
-	//		.setName('channel')
-	//		.setDescription('The channel where the event will take place')
-	//		.setRequired(true)
-	//		.setChannelTypes(['GUILD_VOICE', 'GUILD_STAGE_VOICE']),
-	//)
-	.addChannelOption(option => option
-		.setName('channel')
-		.setDescription('The channel where the event will take place')
-		.setRequired(true),
-	)
+		//	.addChannelOption(option => option
+		//		.setName('channel')
+		//		.setDescription('The channel where the event will take place')
+		//		.setRequired(true)
+		//		.setChannelTypes(['GUILD_VOICE', 'GUILD_STAGE_VOICE']),
+		//)
+		.addChannelOption(option => option
+			.setName('channel')
+			.setDescription('The channel where the event will take place')
+			.setRequired(true),
+		)
 		.addStringOption(option => option
 			.setName('timezone')
 			.setDescription('The timezone of the event')

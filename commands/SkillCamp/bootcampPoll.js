@@ -38,7 +38,7 @@ const logger = winston.createLogger({
 });
 
 const { guildData } = require('../../data/guildData.json');
-const SkillCampGuildIds = guildData.SkillCamps.guildIDs;
+const SkillCampGuildIds = guildData.guildIDs;
 
 const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 

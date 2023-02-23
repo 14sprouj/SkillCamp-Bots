@@ -40,7 +40,7 @@ const logger = winston.createLogger({
 });
 
 const { guildData } = require('../../data/guildData.json');
-const SkillCampGuildIds = guildData.SkillCamps.guildIDs;
+const SkillCampGuildIds = guildData.guildIDs;
 
 module.exports = {
 	name: 'guildMemberAdd',
@@ -90,7 +90,7 @@ module.exports = {
 			member.roles.add(role);
 		}
 
-		if (member.guild.id == guildData.SkillCamps.CodeCamp.guildId) {
+		if (member.guild.id == guildData.CodeCamp.guildId) {
 			console.log("CodeCamp member joined");
 			if (!member.user.bot) {
 				role = member.guild.roles.cache.find(role => role.name === "Coders");
@@ -123,10 +123,10 @@ module.exports = {
 			if (!statsChannel) {
 				return;
 			}
-			statsChannel.messages.get(guildData.SkillCamps.CodeCamp.statsMsgs.Users).then(message => {
+			statsChannel.messages.get(guildData.CodeCamp.statsMsgs.Users).then(message => {
 				message.edit(`**Users:** ${member.guild.members.cache.size}`);
 			});
-			statsChannel.messages.get(guildData.SkillCamps.CodeCamp.statsMsgs.Members).then(message => {
+			statsChannel.messages.get(guildData.CodeCamp.statsMsgs.Members).then(message => {
 				message.edit(`**Members:** ${member.guild.members.cache.filter(member => !member.user.bot).size}`);
 			});
 
@@ -135,7 +135,7 @@ module.exports = {
 			} catch (error) {
 				logger.error("Unable to react to welcome message");
 			}
-		} else if (member.guild.id == guildData.SkillCamps.ScriptCamp.guildId) {
+		} else if (member.guild.id == guildData.ScriptCamp.guildId) {
 			console.log("ScriptCamp member joined");
 			if (!member.user.bot) {
 				role = member.guild.roles.cache.find(role => role.name === "Screenwriter");

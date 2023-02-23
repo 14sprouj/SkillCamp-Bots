@@ -38,7 +38,7 @@ const logger = winston.createLogger({
 });
 
 const { guildData } = require('../../data/guildData.json');
-const SkillCampGuildIds = guildData.SkillCamps.guildIDs;
+const SkillCampGuildIds = guildData.guildIDs;
 
 module.exports = {
 	name: 'interactionCreate',
@@ -68,7 +68,7 @@ module.exports = {
 				interaction.reply({ content: `You have been removed from the <@${role.id}> role`, ephemeral: true });
 			} else {
 				interaction.member.roles.add(role);
-				interaction.reply({ content: `You have been given the <@&${role.id}> role`, ephemeral: true });
+				interaction.reply({ content: `You have been given the <@${role.id}> role`, ephemeral: true });
 			}
 		}
 
@@ -82,10 +82,10 @@ module.exports = {
 				return;
 			}
 			let channel, message, numbers;
-			if (guildId == guildData.SkillCamps.CodeCamp.guildId) {
+			if (guildId == guildData.CodeCamp.guildId) {
 				channel = interaction.guild.channels.cache.get('1073622067196481667');
 				message = channel.messages.fetch('1074132703017975868');
-			} else if (guildId == guildData.SkillCamps.CampMaster.guildId) {
+			} else if (guildId == guildData.CampMaster.guildId) {
 				channel = interaction.guild.channels.cache.get('1075113750924898324');
 				message = channel.messages.fetch('1075114480742178877');
 			}
@@ -223,6 +223,38 @@ module.exports = {
 				roleRequest("New Zealand", interaction);
 			} else if (buttonID == "india") {
 				roleRequest("India", interaction);
+			} else if (buttonID == "japan") {
+				roleRequest("Japan", interaction);
+			} else if (buttonID == "china") {
+				roleRequest("China", interaction);
+			} else if (buttonID == "korea") {
+				roleRequest("Korea", interaction);
+			} else if (buttonID == "russia") {
+				roleRequest("Russia", interaction);
+			} else if (buttonID == "ukraine") {
+				roleRequest("Ukraine", interaction);
+			} else if (buttonID == "middleeast") {
+				roleRequest("Middle East", interaction);
+			} else if (buttonID == "argentina") {
+				roleRequest("Argentina", interaction);
+			} else if (buttonID == "chile") {
+				roleRequest("Chile", interaction);
+			} else if (buttonID == "colombia") {
+				roleRequest("Colombia", interaction);
+			} else if (buttonID == "scandinavia") {
+				roleRequest("Scandinavia", interaction);
+			} else if (buttonID == "netherlands") {
+				roleRequest("Netherlands", interaction);
+			} else if (buttonID == "sweden") {
+				roleRequest("Sweden", interaction);
+			} else if (buttonID == "norway") {
+				roleRequest("Norway", interaction);
+			} else if (buttonID == "denmark") {
+				roleRequest("Denmark", interaction);
+			} else if (buttonID == "finland") {
+				roleRequest("Finland", interaction);
+			} else if (buttonID == "poland") {
+				roleRequest("Poland", interaction);
 			}
 
 			if (guildName == "ScriptCamp") {
@@ -253,7 +285,7 @@ module.exports = {
 				} else if (buttonID == "groupSketch") {
 					roleRequest('SketchComedyWorkshop', interaction);
 				}
-			} else if (guildName == "CodeCamp") {
+			} else if (guildName == "CodeCamp" || guildName == "CampMaster") {
 				if (buttonID == "rubberducks") {
 					roleRequest('Rubber Ducks', interaction);
 				} else if (buttonID == "qotw") {
@@ -288,6 +320,22 @@ module.exports = {
 					roleRequest('Xcode', interaction);
 				} else if (buttonID == "vb") {
 					roleRequest('Visual Basic', interaction);
+				}
+			} else if (guildName == "ToonCamp") {
+				if (buttonID == "illustration") {
+					roleRequest('Illustration', interaction);
+				} else if (buttonID == "comics") {
+					roleRequest('Comics / Manga', interaction);
+				} else if (buttonID == "storyboard") {
+					roleRequest('Storyboarding', interaction);
+				} else if (buttonID == "animation") {
+					roleRequest('Animation', interaction);
+				} else if (buttonID == "sounddesign") {
+					roleRequest('Sound Design / Foley', interaction);
+				} else if (buttonID == "voiceacting") {
+					roleRequest('Voice Acting', interaction);
+				} else if (buttonID == "music") {
+					roleRequest('Music', interaction);
 				}
 			}
 		}

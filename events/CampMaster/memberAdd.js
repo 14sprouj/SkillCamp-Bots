@@ -40,7 +40,7 @@ const logger = winston.createLogger({
 });
 
 const { guildData } = require('../../data/guildData.json');
-const SkillCampGuildIds = guildData.SkillCamps.guildIDs;
+const SkillCampGuildIds = guildData.guildIDs;
 // TODO convert to mysql2
 const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 const xhr = new XMLHttpRequest();
@@ -93,7 +93,7 @@ module.exports = {
 			member.roles.add(role);
 		}
 
-		if (member.guild.id == guildData.SkillCamps.CodeCamp.guildId) {
+		if (member.guild.id == guildData.CodeCamp.guildId) {
 			console.log("CodeCamp member joined");
 			if (!member.user.bot) {
 				role = member.guild.roles.cache.find(role => role.name === "Coders");
@@ -126,10 +126,10 @@ module.exports = {
 			if (!statsChannel) {
 				return;
 			}
-			statsChannel.messages.get(guildData.SkillCamps.CodeCamp.statsMsgs.Users).then(message => {
+			statsChannel.messages.get(guildData.CodeCamp.statsMsgs.Users).then(message => {
 				message.edit(`**Users:** ${member.guild.members.cache.size}`);
 			});
-			statsChannel.messages.get(guildData.SkillCamps.CodeCamp.statsMsgs.Members).then(message => {
+			statsChannel.messages.get(guildData.CodeCamp.statsMsgs.Members).then(message => {
 				message.edit(`**Members:** ${member.guild.members.cache.filter(member => !member.user.bot).size}`);
 			});
 
@@ -138,7 +138,7 @@ module.exports = {
 			} catch (error) {
 				logger.error("Unable to react to welcome message");
 			}
-		} else if (member.guild.id == guildData.SkillCamps.ScriptCamp.guildId) {
+		} else if (member.guild.id == guildData.ScriptCamp.guildId) {
 			console.log("ScriptCamp member joined");
 			if (!member.user.bot) {
 				role = member.guild.roles.cache.find(role => role.name === "Screenwriter");
@@ -200,16 +200,16 @@ module.exports = {
 				if (err) throw err;
 				const SkillCamp = JSON.parse(data);
 				// update member count
-				if (member.guild.id == guildData.SkillCamps.CodeCamp.guildId) {
+				if (member.guild.id == guildData.CodeCamp.guildId) {
 					logger.info(`New CodeCamp member! Member count: ${memberCount}`);
 					SkillCamp.Discord.CodeCamp.MemberCount = memberCount;
-				} else if (member.guild.id == guildData.SkillCamps.ScriptCamp.guildId) {
+				} else if (member.guild.id == guildData.ScriptCamp.guildId) {
 					SkillCamp.Discord.ScriptCamp.MemberCount = memberCount;
-				} else if (member.guild.id == guildData.SkillCamps.DesignCamp.guildId) {
+				} else if (member.guild.id == guildData.DesignCamp.guildId) {
 					SkillCamp.Discord.DesignCamp.MemberCount = memberCount;
-				} else if (member.guild.id == guildData.SkillCamps.WordCamp.guildId) {
+				} else if (member.guild.id == guildData.WordCamp.guildId) {
 					SkillCamp.Discord.WordCamp.MemberCount = memberCount;
-				} else if (member.guild.id == guildData.SkillCamps.CampMaster.guildId) {
+				} else if (member.guild.id == guildData.CampMaster.guildId) {
 					SkillCamp.Discord.CampMaster.MemberCount = memberCount;
 				}
 

@@ -40,7 +40,7 @@ const logger = winston.createLogger({
 
 const { EmbedBuilder } = require('discord.js');
 const { guildData } = require('../../data/guildData.json');
-const SkillCampGuildIds = guildData.SkillCamps.guildIDs;
+const SkillCampGuildIds = guildData.guildIDs;
 
 
 module.exports = {
@@ -117,10 +117,10 @@ module.exports = {
 					if (!statsChannel) {
 						return;
 					}
-					statsChannel.messages.get(guildData.SkillCamps.CodeCamp.statsMsgs.Users).then(message => {
+					statsChannel.messages.get(guildData.CodeCamp.statsMsgs.Users).then(message => {
 						message.edit(`**Users:** ${member.guild.members.cache.size}`);
 					});
-					statsChannel.messages.get(guildData.SkillCamps.CodeCamp.statsMsgs.Members).then(message => {
+					statsChannel.messages.get(guildData.CodeCamp.statsMsgs.Members).then(message => {
 						message.edit(`**Members:** ${member.guild.members.cache.filter(member => !member.user.bot).size}`);
 					});
 				} else if (guildName == "ScriptCamp") {

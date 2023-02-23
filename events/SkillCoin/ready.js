@@ -45,8 +45,13 @@ module.exports = {
 	once: true,
 	execute(client) {
 		const serverCount = parseInt(client.guilds.cache.size) - 1;
-		client.user.setActivity(`this server and ${serverCount} others`, { type: ActivityType.Watching });
-		client.user.setStatus('online');
+		if (env === 'prod') {
+			client.user.setActivity(`this server and ${serverCount} others`, { type: ActivityType.Watching });
+			client.user.setStatus('online');
+		} else {
+			client.user.setActivity(`this server and ${serverCount} others`, { type: ActivityType.Watching });
+			client.user.setStatus('dnd');
+		}
 		logger.info('Bot connected!');
 		console.log('Bot ready!');
 	},

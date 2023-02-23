@@ -39,7 +39,7 @@ const logger = winston.createLogger({
 });
 
 const { guildData } = require('../../data/guildData.json');
-const SkillCampGuildIds = guildData.SkillCamps.guildIDs;
+const SkillCampGuildIds = guildData.guildIDs;
 
 module.exports = {
 	name: 'voiceStateUpdate',
@@ -83,8 +83,8 @@ module.exports = {
 			logChannel.send({ embeds: [embed] });
 		}
 
-		if (newState.guild.id == guildData.SkillCamps.CodeCamp.guildId) {
-			if (newState.channelId == guildData.SkillCamps.CodeCamp.channels.rubberDucksVC.channelID || newState.channelId == guildData.SkillCamps.CodeCamp.channels.rubberDucksQuietVC.channelID) {
+		if (newState.guild.id == guildData.CodeCamp.guildId) {
+			if (newState.channelId == guildData.CodeCamp.channels.rubberDucksVC.channelID || newState.channelId == guildData.CodeCamp.channels.rubberDucksQuietVC.channelID) {
 				// get role
 				const role = newState.guild.roles.cache.find(role => role.name === 'Rubber Ducks Attendees');
 				// add role
@@ -105,30 +105,30 @@ module.exports = {
 					console.error(error);
 				}
 			}
-		} else if (newState.guild.id == guildData.SkillCamps.ScriptCamp.guildId) {
-			if (newState.channelId == guildData.SkillCamps.ScriptCamp.channels.writersRoomVC || newState.channelId == guildData.SkillCamps.ScriptCamp.channels.writersRoomQuietVC || newState.channelId == guildData.SkillCamps.ScriptCamp.channels.artistsRoomVC) {
-				if (oldState.channelId == guildData.SkillCamps.ScriptCamp.channels.writersRoomVC || oldState.channelId == guildData.SkillCamps.ScriptCamp.channels.writersRoomQuietVC || oldState.channelId == guildData.SkillCamps.ScriptCamp.channels.artistsRoomVC) {
+		} else if (newState.guild.id == guildData.ScriptCamp.guildId) {
+			if (newState.channelId == guildData.ScriptCamp.channels.writersRoomVC || newState.channelId == guildData.ScriptCamp.channels.writersRoomQuietVC || newState.channelId == guildData.ScriptCamp.channels.artistsRoomVC) {
+				if (oldState.channelId == guildData.ScriptCamp.channels.writersRoomVC || oldState.channelId == guildData.ScriptCamp.channels.writersRoomQuietVC || oldState.channelId == guildData.ScriptCamp.channels.artistsRoomVC) {
 					return;
 				} else {
 					// get channel
-					const tChannel = newState.guild.channels.cache.get(guildData.SkillCamps.ScriptCamp.channels.writersArtistsRoom.channelID);
+					const tChannel = newState.guild.channels.cache.get(guildData.ScriptCamp.channels.writersArtistsRoom.channelID);
 					tChannel.send(`${newState.member.user.tag} has joined the Writers Room!`);
 				}
-			} else if (oldState.channelId == guildData.SkillCamps.ScriptCamp.channels.writersRoomVC || oldState.channelId == guildData.SkillCamps.ScriptCamp.channels.writersRoomQuietVC || oldState.channelId == guildData.SkillCamps.ScriptCamp.channels.artistsRoomVC) {
-				const tChannel = newState.guild.channels.cache.get(guildData.SkillCamps.ScriptCamp.channels.writersArtistsRoom.channelID);
+			} else if (oldState.channelId == guildData.ScriptCamp.channels.writersRoomVC || oldState.channelId == guildData.ScriptCamp.channels.writersRoomQuietVC || oldState.channelId == guildData.ScriptCamp.channels.artistsRoomVC) {
+				const tChannel = newState.guild.channels.cache.get(guildData.ScriptCamp.channels.writersArtistsRoom.channelID);
 				tChannel.send(`${newState.member.user.tag} has left the Writers Room!`);
 			}
-		} else if (newState.guild.id == guildData.SkillCamps.ToonCamp.guildId) {
-			if (newState.channelId == guildData.SkillCamps.ToonCamp.channels.writersRoomVC || newState.channelId == guildData.SkillCamps.ToonCamp.channels.writersRoomQuietVC) {
-				if (oldState.channelId == guildData.SkillCamps.ToonCamp.channels.writersRoomVC || oldState.channelId == guildData.SkillCamps.ToonCamp.channels.writersRoomQuietVC) {
+		} else if (newState.guild.id == guildData.ToonCamp.guildId) {
+			if (newState.channelId == guildData.ToonCamp.channels.writersRoomVC || newState.channelId == guildData.ToonCamp.channels.writersRoomQuietVC) {
+				if (oldState.channelId == guildData.ToonCamp.channels.writersRoomVC || oldState.channelId == guildData.ToonCamp.channels.writersRoomQuietVC) {
 					return;
 				} else {
 					// get channel
-					const tChannel = newState.guild.channels.cache.get(guildData.SkillCamps.ToonCamp.channels.writersArtistsRoom.channelID);
+					const tChannel = newState.guild.channels.cache.get(guildData.ToonCamp.channels.writersArtistsRoom.channelID);
 					tChannel.send(`${newState.member.user.tag} has joined the Artists Room!`);
 				}
-			} else if (oldState.channelId == guildData.SkillCamps.ToonCamp.channels.writersRoomVC || oldState.channelId == guildData.SkillCamps.ToonCamp.channels.writersRoomQuietVC) {
-				const tChannel = newState.guild.channels.cache.get(guildData.SkillCamps.ToonCamp.channels.writersArtistsRoom.channelID);
+			} else if (oldState.channelId == guildData.ToonCamp.channels.writersRoomVC || oldState.channelId == guildData.ToonCamp.channels.writersRoomQuietVC) {
+				const tChannel = newState.guild.channels.cache.get(guildData.ToonCamp.channels.writersArtistsRoom.channelID);
 				tChannel.send(`${newState.member.user.tag} has left the Artists Room!`);
 			}
 		}
