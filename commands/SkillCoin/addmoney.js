@@ -91,7 +91,7 @@ module.exports = {
 				return;
 			}
 			// query database
-			connection.query("INSERT INTO `coinlog` (`userID`, `coins`, `camp`, `senderID`, `reason`) VALUES ('" + userid + "', '" + coins + "', '" + camp + "', '" + giver + "', 1)", function (err, result) {
+			connection.query("INSERT INTO `coinlog` (`userID`, `coins`, `camp`, `senderID`, `reason`) VALUES ('" + userid + "', '" + coins + "', '" + interaction.guild.id + "', '" + giver + "', 1)", function (err, result) {
 				if (err) {
 					logger.error(err);
 					interaction.editReply({ content: 'Error: Unable to add coins', ephemeral: true });
