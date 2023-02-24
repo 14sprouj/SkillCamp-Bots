@@ -63,7 +63,7 @@ module.exports = {
 				if (guild) {
 					// get all members in the guild
 					guild.members.fetch().then(members => {
-						//console.log(`[${guild.name}] Updating member roles...`);
+						console.log(`[${guild.name}] Updating member roles...`);
 						members.forEach(member => {
 							//console.log(`[${guild.name}] Found ${member.user.tag}`);
 
