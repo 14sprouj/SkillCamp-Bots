@@ -311,41 +311,41 @@ module.exports = {
 						channel.send(results[0].Message);
 					});
 				});
+				//connection.end();
+			}, 1000 * 30);
 
+			setInterval(() => {
 				// for each guild
 				client.guilds.cache.forEach((guild) => {
 					console.log(`Guild: ${guild.name} (${guild.id})`);
 					// get all members
-					guild.members.cache.fetch().then((members) => {
+					guild.members.cache.forEach((member) => {
 						// for each member
-						members.forEach((member) => {
-							console.log(`Member: ${member.user.username} (${member.id})`);
-							connection.query(`SELECT * FROM users WHERE UserID = '${member.id}'`, (error, results, fields) => {
-								if (error) {
-									console.error(error);
-									logger.error(error);
-									return;
-								}
-								if (results.length == 0) {
-									connection.query(`INSERT INTO users (discordUserID, discordUsername, discordDiscriminator) VALUES ('${member.id}', '${member.user.username}', '${member.user.discriminator}')`, (error, results, fields) => {
-										if (error) {
-											console.error(error);
-											logger.error(error);
-											return;
-										}
-									});
-								}
+						console.log(`Member: ${member.user.username} (${member.id})`);
+						connection.query(`SELECT * FROM users WHERE discordUserID = '${member.id}'`, (error, results, fields) => {
+							if (error) {
+								console.error(error);
+								logger.error(error);
+								return;
+							}
+							if (results.length == 0) {
+								connection.query(`INSERT INTO users (discordUserID, discordUsername, discordDiscriminator) VALUES ('${member.id}', '${member.user.username}', '${member.user.discriminator}')`, (error, results, fields) => {
+									if (error) {
+										console.error(error);
+										logger.error(error);
+										return;
+									}
+								});
+							}
 
-								if (results.length > 1) {
-									console.error(`Multiple users with same ID: ${member.id}`);
-									logger.error(`Multiple users with same ID: ${member.id}`);
-								}
-							});
+							if (results.length > 1) {
+								console.error(`Multiple users with same ID: ${member.id}`);
+								logger.error(`Multiple users with same ID: ${member.id}`);
+							}
 						});
 					});
 				});
 			});
-			//connection.end();
-		}, 1000 * 60);
+		}, 1000 * 60 * 60 * 5);
 	},
 };
