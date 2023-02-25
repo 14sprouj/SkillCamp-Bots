@@ -52,7 +52,7 @@ module.exports = {
 			client.user.setStatus('online');
 		} else {
 			client.user.setActivity(`this server and ${serverCount} others`, { type: ActivityType.Watching });
-			client.user.setStatus('dnd');
+			client.user.setStatus('idle');
 		}
 		logger.info('Bot connected!');
 		console.log('Bot ready!');

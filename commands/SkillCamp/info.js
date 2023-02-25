@@ -147,8 +147,47 @@ module.exports = {
 			if (interaction.options.getUser('target')) {
 				user = interaction.options.getUser('target');
 			}
-			await interaction.reply({ content: `Username: ${user.username}\nID: ${user.id}\nUser since: ${user.createdAt}`, ephemeral: true });
+			await interaction.reply({ content: `Tag: ${user.tag}\nUsername: ${user.username}\nDiscriminator: ${user.discriminator}\nID: ${user.id}\nUser since: ${user.createdAt}`, ephemeral: true });
 			logger.info(`${interaction.user.id} in #${interaction.channel.name} used the "/info user" command.`);
+
+			// connect to the database
+			const connection = mysql.createConnection({
+				host: process.env.DB_HOST,
+				user: process.env.DB_USER,
+				password: process.env.DB_PASSWORD,
+				port: process.env.DB_PORT,
+				database: process.env.DB_NAME,
+			});
+
+			connection.connect(function (err) {
+				if (err) {
+					logger.error(err);
+					interaction.editReply({ content: 'Error: Unable to connect to the database', ephemeral: true });
+					console.error('error connecting: ' + err.stack);
+					return;
+				}
+				connection.query(`SELECT * FROM users WHERE UserID = '${member.id}'`, (error, results, fields) => {
+					if (error) {
+						console.error(error);
+						logger.error(error);
+						return;
+					}
+					if (results.length == 0) {
+						connection.query(`INSERT INTO users (discordUserID, discordUsername, discordDiscriminator) VALUES ('${member.id}', '${member.user.username}', '${member.user.discriminator}')`, (error, results, fields) => {
+							if (error) {
+								console.error(error);
+								logger.error(error);
+								return;
+							}
+						});
+					}
+
+					if (results.length > 1) {
+						console.error(`Multiple users with same ID: ${member.id}`);
+						logger.error(`Multiple users with same ID: ${member.id}`);
+					}
+				});
+			});
 		}
 	},
 };

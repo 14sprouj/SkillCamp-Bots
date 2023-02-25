@@ -90,6 +90,27 @@ module.exports = {
 				console.error('error connecting: ' + err.stack);
 				return;
 			}
+			connection.query(`SELECT * FROM users WHERE UserID = '${member.id}'`, (error, results, fields) => {
+				if (error) {
+					console.error(error);
+					logger.error(error);
+					return;
+				}
+				if (results.length == 0) {
+					connection.query(`INSERT INTO users (discordUserID, discordUsername, discordDiscriminator) VALUES ('${member.id}', '${member.user.username}', '${member.user.discriminator}')`, (error, results, fields) => {
+						if (error) {
+							console.error(error);
+							logger.error(error);
+							return;
+						}
+					});
+				}
+
+				if (results.length > 1) {
+					console.error(`Multiple users with same ID: ${member.id}`);
+					logger.error(`Multiple users with same ID: ${member.id}`);
+				}
+			});
 			// query database
 			connection.query("INSERT INTO `coinlog` (`userID`, `coins`, `camp`, `senderID`, `reason`) VALUES ('" + userid + "', '" + coins + "', '" + interaction.guild.id + "', '" + giver + "', 1)", function (err, result) {
 				if (err) {

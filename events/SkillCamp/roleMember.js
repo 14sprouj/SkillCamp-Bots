@@ -59,10 +59,9 @@ module.exports = {
 			logChannel = newMember.guild.channels.cache.find(ch => ch.name === 'logs');
 		}
 
-		if (oldMember.channelId == newMember.channelId) return;
-
 		// if role is added
 		if (oldMember.roles.cache.size < newMember.roles.cache.size) {
+			console.log("Role Added");
 			const roleAdded = newMember.roles.cache.filter(role => !oldMember.roles.cache.has(role.id)).first();
 			embed = new EmbedBuilder()
 				.setTitle('Role Added')
@@ -70,12 +69,15 @@ module.exports = {
 				.setColor('#0066FF')
 				.setTimestamp(new Date());
 		} else if (oldMember.roles.cache.size > newMember.roles.cache.size) {
+			console.log("Role Removed");
 			const roleRemoved = oldMember.roles.cache.filter(role => !newMember.roles.cache.has(role.id)).first();
 			embed = new EmbedBuilder()
 				.setTitle('Role Removed')
 				.setDescription(`<@${newMember.user.id}> had the role <@${roleRemoved.id}> removed`)
 				.setColor('#66FF00')
 				.setTimestamp(new Date());
+		} else {
+			return;
 		}
 		logChannel.send({ embeds: [embed] });
 	},

@@ -65,7 +65,6 @@ module.exports = {
 			const minute = d.getMinutes();
 
 			if (minute == 55) {
-				// FIX Rubber Ducks message
 				const channel = client.guilds.cache.get(guildData.CodeCamp.guildId).channels.cache.get(guildData.CodeCamp.channels.rubberDucksVC.channelID);
 				const role = client.guilds.cache.get(guildData.CodeCamp.guildId).roles.cache.find(role => role.name === 'Rubber Ducks Attendees');
 				const membersWithRole = role.members.size;
@@ -78,7 +77,7 @@ module.exports = {
 						} else if (random == 2) {
 							channel.send(`Rubber Ducks is a great place to get help with your projects. Unmute yourself and ask a question!\n:duck::duck::duck::duck::duck::duck:`);
 						} else if (random == 3) {
-							channel.send(`If you need some help just unmute yourself and ask a question! OR maybe you just want to talk. Join us in the main <#guildData.CodeCamp.channels.rubberDucksVC.channelID> room.\n:duck::duck::duck::duck::duck::duck:`);
+							channel.send(`If you need some help just unmute yourself and ask a question! OR maybe you just want to talk. Join us in the main <#${guildData.CodeCamp.channels.rubberDucksVC.channelID}> room.\n:duck::duck::duck::duck::duck::duck:`);
 						}
 					} catch (error) {
 						console.error(error);
@@ -310,6 +309,39 @@ module.exports = {
 
 						// send message
 						channel.send(results[0].Message);
+					});
+				});
+
+				// for each guild
+				client.guilds.cache.forEach((guild) => {
+					console.log(`Guild: ${guild.name} (${guild.id})`);
+					// get all members
+					guild.members.cache.fetch().then((members) => {
+						// for each member
+						members.forEach((member) => {
+							console.log(`Member: ${member.user.username} (${member.id})`);
+							connection.query(`SELECT * FROM users WHERE UserID = '${member.id}'`, (error, results, fields) => {
+								if (error) {
+									console.error(error);
+									logger.error(error);
+									return;
+								}
+								if (results.length == 0) {
+									connection.query(`INSERT INTO users (discordUserID, discordUsername, discordDiscriminator) VALUES ('${member.id}', '${member.user.username}', '${member.user.discriminator}')`, (error, results, fields) => {
+										if (error) {
+											console.error(error);
+											logger.error(error);
+											return;
+										}
+									});
+								}
+
+								if (results.length > 1) {
+									console.error(`Multiple users with same ID: ${member.id}`);
+									logger.error(`Multiple users with same ID: ${member.id}`);
+								}
+							});
+						});
 					});
 				});
 			});

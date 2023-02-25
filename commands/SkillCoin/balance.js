@@ -41,6 +41,7 @@ const logger = winston.createLogger({
 const { SlashCommandBuilder, PermissionsBitField, PermissionFlagsBits, EmbedBuilder, resolveColor } = require('discord.js');
 const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 const xhr = new XMLHttpRequest();
+const { guildData } = require('../../data/guildData.json');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -50,17 +51,6 @@ module.exports = {
 		logger.info('used /balance command');
 		await interaction.reply({ content: 'Checking your SkillCoin balance', ephemeral: true, fetchReply: true });
 		const userid = interaction.user.id;
-
-		// connect to api
-		const options = {
-			'method': 'POST',
-			'url': 'https://joelsprouse.co.uk/SkillCamp/Website/api/coin-balance.php',
-			'headers': {
-			},
-			formData: {
-				'userid': userid,
-			},
-		};
 
 		// connect to the database
 		const connection = mysql.createConnection({
@@ -77,6 +67,27 @@ module.exports = {
 				console.error('error connecting: ' + err.stack);
 				return;
 			}
+			connection.query(`SELECT * FROM users WHERE UserID = '${member.id}'`, (error, results, fields) => {
+				if (error) {
+					console.error(error);
+					logger.error(error);
+					return;
+				}
+				if (results.length == 0) {
+					connection.query(`INSERT INTO users (discordUserID, discordUsername, discordDiscriminator) VALUES ('${member.id}', '${member.user.username}', '${member.user.discriminator}')`, (error, results, fields) => {
+						if (error) {
+							console.error(error);
+							logger.error(error);
+							return;
+						}
+					});
+				}
+
+				if (results.length > 1) {
+					console.error(`Multiple users with same ID: ${member.id}`);
+					logger.error(`Multiple users with same ID: ${member.id}`);
+				}
+			});
 			// query database
 			connection.query("SELECT camp, Balance FROM `balance` WHERE `userID` = '" + interaction.user.id + "'", function (err, result) {
 				if (err) {
@@ -90,45 +101,43 @@ module.exports = {
 				console.log(rows);
 
 				let coins = 0;
-				const array = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+				let array = [];
 
 				result.forEach(function (row) {
 					coins += parseInt(row.Balance);
-					if (row.camp == 'ScriptCamp') {
+					if (row.camp == guildData.ScriptCamp.guildId) {
 						array[0] = row.Balance;
-					} else if (row.camp == 'WordCamp') {
+					} else if (row.camp == guildData.WordCamp.guildId) {
 						array[1] = row.Balance;
-					} else if (row.camp == 'FilmCamp') {
+					} else if (row.camp == guildData.FilmCamp.guildId) {
 						array[2] = row.Balance;
-					} else if (row.camp == 'CreatorCamp') {
+					} else if (row.camp == guildData.CreatorCamp.guildId) {
 						array[3] = row.Balance;
-					} else if (row.camp == 'ToonCamp') {
+					} else if (row.camp == guildData.ToonCamp.guildId) {
 						array[4] = row.Balance;
-					} else if (row.camp == 'LingoCamp') {
+					} else if (row.camp == guildData.LingoCamp.guildId) {
 						array[6] = row.Balance;
-					} else if (row.camp == 'CodeCamp') {
+					} else if (row.camp == guildData.CodeCamp.guildId) {
 						array[5] = row.Balance;
-					} else if (row.camp == 'CampMaster') {
-						// int to string
+					} else if (row.camp == guildData.CampMaster.guildId) {
 						array[500] = row.Balance;
 					}
 				});
 				console.log(array);
 
-				coins = coins.toLocaleString();
 				console.log(coins);
 				const embed = new EmbedBuilder()
 					.setTitle('SkillCoin Balance')
 					.setColor('#998900')
 					.setDescription(`You have ${coins} SkillCoins`)
 					.addFields(
-						{ name: '<:ScriptCamp:1041136882165219339> ScriptCamp', value: `${array[0].toLocaleString()}`, inline: true },
-						{ name: "<:WordCamp:1039274617153527839> WordCamp", value: `${array[1].toLocaleString()}`, inline: true },
-						{ name: "<:FilmCamp:1039275043416453132> FilmCamp", value: `${array[2].toLocaleString()}`, inline: true },
-						{ name: "<:CreatorCamp:1039274674716160110> CreatorCamp", value: `${array[3].toLocaleString()}`, inline: true },
-						{ name: "<:ToonCamp:1039274638666117230> ToonCamp", value: `${array[4].toLocaleString()}`, inline: true },
-						{ name: "<:CodeCamp:1035994387580211290> CodeCamp", value: `${array[5].toLocaleString()}`, inline: true },
-						{ name: "<:LingoCamp:1039275181824282716> LingoCamp", value: `${array[6].toLocaleString()}`, inline: true },
+						{ name: '<:ScriptCamp:1041136882165219339> ScriptCamp', value: `${array[0]}`, inline: true },
+						{ name: "<:WordCamp:1039274617153527839> WordCamp", value: `${array[1]}`, inline: true },
+						{ name: "<:FilmCamp:1039275043416453132> FilmCamp", value: `${array[2]}`, inline: true },
+						{ name: "<:CreatorCamp:1039274674716160110> CreatorCamp", value: `${array[3]}`, inline: true },
+						{ name: "<:ToonCamp:1039274638666117230> ToonCamp", value: `${array[4]}`, inline: true },
+						{ name: "<:CodeCamp:1035994387580211290> CodeCamp", value: `${array[5]}`, inline: true },
+						{ name: "<:LingoCamp:1039275181824282716> LingoCamp", value: `${array[6]}`, inline: true },
 					);
 				console.log(embed);
 				console.log(embed.fields);
