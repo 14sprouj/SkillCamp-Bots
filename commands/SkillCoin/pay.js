@@ -113,7 +113,7 @@ module.exports = {
 		const coins = interaction.options.getInteger('amount');
 		const reason = interaction.options.getString('reason');
 		const giver = interaction.user.id;
-		const camp = interaction.guild.name;
+		const camp = interaction.guild.id;
 		let embed;
 		logger.info('${userid} used /pay command');
 		await interaction.deferReply({ ephemeral: true, fetchReply: true });

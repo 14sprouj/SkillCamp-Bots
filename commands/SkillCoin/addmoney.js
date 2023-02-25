@@ -68,7 +68,7 @@ module.exports = {
 		const userid = interaction.options.getUser('user').id;
 		const coins = interaction.options.getInteger('amount');
 		const giver = interaction.user.id;
-		const camp = interaction.guild.name;
+		const camp = interaction.guild.id;
 		let embed;
 		logger.info('${userid} used /addmoney command');
 		await interaction.deferReply({ ephemeral: true, fetchReply: true });
