@@ -77,6 +77,8 @@ const client = new Client({
 client.commands = new Collection();
 let commandsPath, commandFiles, command, filePath, commandName, file;
 
+i = 0;
+
 commandsPath = path.join(__dirname, 'commands/SkillCamp');
 // get all files in the commands folder that end with .js and do not start with an underscore
 commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js') && !file.startsWith('._'));

@@ -50,7 +50,7 @@ const SCOPES = ['https://www.googleapis.com/auth/calendar'];
 const TOKEN_PATH = path.join(process2.cwd(), 'token.json');
 const CREDENTIALS_PATH = path.join(process2.cwd(), 'credentials.json');
 
-const { guildData } = require('../../data/guildData.json');
+const { guildData } = require('../../../data/guildData.json');
 const SkillCampGuildIds = guildData.guildIDs;
 
 const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, GuildScheduledEvent, GuildScheduledEventManager } = require('discord.js');
@@ -58,7 +58,7 @@ const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder, ActionRowBuilder
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('event')
-		.setDescription('Add an event to the calendars')
+		.setDescription('ALPHA: Add an event to the calendars')
 		// block the command to only be used by the bot owner
 		.setDefaultMemberPermissions(PermissionFlagsBits.ManageEvents | PermissionFlagsBits.Administrator | PermissionFlagsBits.ManageRoles)
 		.addStringOption(option => option

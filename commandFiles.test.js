@@ -28,8 +28,8 @@ for (const file of commandFiles) {
 	j++;
 }
 
-test('number of SkillCamp commands should be 10', () => {
-	expect(j).toBe(10);
+test('number of SkillCamp commands should be 9', () => {
+	expect(j).toBe(9);
 });
 
 let k = 0;
