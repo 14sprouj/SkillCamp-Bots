@@ -8,18 +8,26 @@ const { createLogger, format, transports } = require('winston');
 require('winston-daily-rotate-file');
 
 const transport1 = new winston.transports.DailyRotateFile({
-	filename: 'logs/SkillCoin/' + new Date().getFullYear() + '/' + (parseInt(new Date().getMonth()) + 1) + '/' + new Date().getDate() + '/%DATE% full.log',
-	datePattern: 'YYYY-MM-DD HH',
+	filename: 'logs/SkillCoin/' + new Date().getFullYear() + '/%DATE% full.log',
+	datePattern: 'YYYY-MM-DD',
 	zippedArchive: true,
-	maxSize: '20m',
+	maxSize: '10m',
 });
 
 const transport2 = new winston.transports.DailyRotateFile({
 	level: 'error',
-	filename: 'logs/SkillCoin/' + new Date().getFullYear() + '/' + (parseInt(new Date().getMonth()) + 1) + '/' + new Date().getDate() + '/%DATE% error.log',
-	datePattern: 'YYYY-MM-DD HH',
+	filename: 'logs/SkillCoin/' + new Date().getFullYear() + '/%DATE% error.log',
+	datePattern: 'YYYY-MM-DD',
 	zippedArchive: true,
-	maxSize: '20m',
+	maxSize: '10m',
+});
+
+const transport3 = new winston.transports.DailyRotateFile({
+	level: '',
+	filename: 'logs/SkillCoin/Transactions/%DATE%.log',
+	datePattern: 'YYYY-MM-DD',
+	zippedArchive: true,
+	maxSize: '10m',
 });
 
 const logger = winston.createLogger({
@@ -35,6 +43,21 @@ const logger = winston.createLogger({
 	transports: [
 		transport1,
 		transport2,
+	],
+});
+
+const coinLogger = winston.createLogger({
+	level: 'info',
+	format: winston.format.combine(
+		format.timestamp({
+			format: 'YYYY-MM-DD HH:mm:ss',
+		}),
+		format.errors({ stack: true }),
+		format.splat(),
+		format.json(),
+	),
+	transports: [
+		transport3,
 	],
 });
 
@@ -60,6 +83,7 @@ module.exports = {
 		.addIntegerOption(option => option
 			.setName('amount')
 			.setDescription('The amount of coins to give')
+			.setMinValue(1)
 			.setRequired(true),
 		)
 		.addStringOption(option => option
@@ -85,16 +109,16 @@ module.exports = {
 			if (err) {
 				logger.error(err);
 				interaction.editReply({ content: 'Error: Unable to connect to the database', ephemeral: true });
-				console.error('error connecting: ' + err.stack);
+				console.error('Error connecting: ' + err.stack);
 				return;
 			}
 			// query database
-			connection.query("SELECT * FROM `coinlogreasons`", function (err, result) {
+			connection.query("SELECT CoinLogReasonID, Reason FROM `coinLogReasons` WHERE ShowPay = 1", function (err, result) {
 				if (err) throw err;
 
 				// for each row in the result
 				result.forEach(row => {
-					choices.push({ name: row.reason, value: `${row.coinLogReasonID}` });
+					choices.push({ name: row.Reason, value: row.CoinLogReasonID });
 				});
 
 				console.log(choices);
@@ -109,6 +133,7 @@ module.exports = {
 		});
 	},
 	async execute(interaction) {
+		const user = interaction.options.getUser('user');
 		const userid = interaction.options.getUser('user').id;
 		const coins = interaction.options.getInteger('amount');
 		const reason = interaction.options.getString('reason');
@@ -117,7 +142,7 @@ module.exports = {
 		let embed;
 		logger.info('${userid} used /pay command');
 		await interaction.deferReply({ ephemeral: true, fetchReply: true });
-		await interaction.editReply({ content: `Giving <@${userid}> ${coins} coins for ${reason}`, ephemeral: true, fetchReply: true });
+		await interaction.editReply({ content: `Giving <@${userid}> ${coins} coins for ${reason}`, ephemeral: false, fetchReply: true });
 
 		// connect to the database
 		const connection = mysql.createConnection({
@@ -134,14 +159,14 @@ module.exports = {
 				console.error('error connecting: ' + err.stack);
 				return;
 			}
-			connection.query(`SELECT * FROM users WHERE UserID = '${member.id}'`, (error, results, fields) => {
+			connection.query(`SELECT * FROM users WHERE discordUserID = '${interaction.user.id}'`, (error, results, fields) => {
 				if (error) {
 					console.error(error);
 					logger.error(error);
 					return;
 				}
 				if (results.length == 0) {
-					connection.query(`INSERT INTO users (discordUserID, discordUsername, discordDiscriminator) VALUES ('${member.id}', '${member.user.username}', '${member.user.discriminator}')`, (error, results, fields) => {
+					connection.query(`INSERT INTO users (discordUserID, discordUsername, discordDiscriminator) VALUES ('${interaction.user.id}', '${interaction.user.username}', '${interaction.user.discriminator}')`, (error, results, fields) => {
 						if (error) {
 							console.error(error);
 							logger.error(error);
@@ -151,8 +176,29 @@ module.exports = {
 				}
 
 				if (results.length > 1) {
-					console.error(`Multiple users with same ID: ${member.id}`);
-					logger.error(`Multiple users with same ID: ${member.id}`);
+					console.error(`Multiple users with same ID: ${interaction.user.id}`);
+					logger.error(`Multiple users with same ID: ${interaction.user.id}`);
+				}
+			});
+			connection.query(`SELECT * FROM users WHERE discordUserID = '${userid}'`, (error, results, fields) => {
+				if (error) {
+					console.error(error);
+					logger.error(error);
+					return;
+				}
+				if (results.length == 0) {
+					connection.query(`INSERT INTO users (discordUserID, discordUsername, discordDiscriminator) VALUES ('${user.id}', '${user.username}', '${user.discriminator}')`, (error, results, fields) => {
+						if (error) {
+							console.error(error);
+							logger.error(error);
+							return;
+						}
+					});
+				}
+
+				if (results.length > 1) {
+					console.error(`Multiple users with same ID: ${userid}`);
+					logger.error(`Multiple users with same ID: ${userid}`);
 				}
 			});
 			// query database
@@ -165,15 +211,16 @@ module.exports = {
 				}
 			});
 
-			connection.query("INSERT INTO `coinlog` (`userID`, `coins`, `camp`, `senderID`, `reason`) VALUES ('" + userid + "', '" + coins + "', '" + camp + "', '" + giver + "', '" + reason + "');", function (err, result) {
+			connection.query("INSERT INTO `coinLog` (`UserID`, `Coins`, `Camp`, `SenderID`, `Reason`, `Type`) VALUES ('" + userid + "', '" + coins + "', '" + camp + "', '" + giver + "', '" + reason + "', 3), ('" + userid + "', '-" + coins + "', '" + camp + "', '" + giver + "', 2, 3);", function (err, result) {
 				if (err) {
 					logger.error(err);
 					interaction.editReply({ content: 'Error: Unable to complete transaction', ephemeral: true });
-					console.error('error connecting: ' + err.stack);
+					console.error('Error connecting: ' + err.stack);
 					return;
 				}
 
-				interaction.editReply({ content: `Gave <@${userid}> ${coins} coins for ${reason}`, ephemeral: true, fetchReply: true });
+				interaction.editReply({ content: `Gave <@${userid}> ${coins} coins for ${reason}`, ephemeral: false, fetchReply: true });
+				coinLogger.info(`${giver} gave ${userid} ${coins} coins for ${reason} in ${camp} using /pay command`);
 			});
 		});
 	},
