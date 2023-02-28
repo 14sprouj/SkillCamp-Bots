@@ -48,10 +48,10 @@ module.exports = {
 	execute(client) {
 		console.log(guildData.guildIDs);
 		const serverCount = parseInt(client.guilds.cache.size) - 1;
-		if (env === 'prod') {
+		if (env === 'production') {
 			client.user.setActivity(`this server and ${serverCount} others`, { type: ActivityType.Watching });
 			client.user.setStatus('online');
-		} else if (env === 'dev') {
+		} else if (env === 'development') {
 			client.user.setActivity(`this server and ${serverCount} others`, { type: ActivityType.Watching });
 			client.user.setStatus('dnd');
 		} else {
