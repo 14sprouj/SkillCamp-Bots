@@ -102,7 +102,6 @@ module.exports = {
 										const bRole = guild.roles.cache.find(role => role.name === 'Server Booster');
 										member.roles.remove(bRole);
 									}
-									if (member.user.avatar.startsWith('a_')) nitro = 1;
 
 									sql = `INSERT INTO users (discordUserID, discordUsername, discordDiscriminator, Bot, Booster) VALUES ('${member.user.id}', '${member.user.username}', '${member.user.discriminator}', ${bot}, ${booster})'`;
 									if (results.length == 0) {
