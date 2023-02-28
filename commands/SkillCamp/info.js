@@ -1,24 +1,23 @@
 require('dotenv').config();
-const env = process.env.environment;
 const io = require('@pm2/io');
-
+const mysql = require('mysql2');
 const winston = require('winston');
 const { createLogger, format, transports } = require('winston');
 require('winston-daily-rotate-file');
 
 const transport1 = new winston.transports.DailyRotateFile({
-	filename: 'logs/SkillCamp/' + new Date().getFullYear() + '/' + (parseInt(new Date().getMonth()) + 1) + '/' + new Date().getDate() + '/commands/%DATE% full.log',
-	datePattern: 'YYYY-MM-DD HH',
+	filename: 'logs/SkillCamp/' + new Date().getFullYear() + '/commands/%DATE% full.log',
+	datePattern: 'YYYY-MM-DD',
 	zippedArchive: true,
-	maxSize: '20m',
+	maxSize: '10m',
 });
 
 const transport2 = new winston.transports.DailyRotateFile({
 	level: 'error',
-	filename: 'logs/SkillCamp/' + new Date().getFullYear() + '/' + (parseInt(new Date().getMonth()) + 1) + '/' + new Date().getDate() + '/commands/%DATE% error.log',
-	datePattern: 'YYYY-MM-DD HH',
+	filename: 'logs/SkillCamp/' + new Date().getFullYear() + '/commands/%DATE% error.log',
+	datePattern: 'YYYY-MM-DD',
 	zippedArchive: true,
-	maxSize: '20m',
+	maxSize: '10m',
 });
 
 const logger = winston.createLogger({
@@ -166,7 +165,7 @@ module.exports = {
 					console.error('error connecting: ' + err.stack);
 					return;
 				}
-				connection.query(`SELECT * FROM users WHERE UserID = '${member.id}'`, (error, results, fields) => {
+				connection.query(`SELECT * FROM users WHERE discordUserID = '${user.id}'`, (error, results, fields) => {
 					if (error) {
 						console.error(error);
 						logger.error(error);

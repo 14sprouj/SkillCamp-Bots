@@ -9,18 +9,18 @@ const { createLogger, format, transports } = require('winston');
 require('winston-daily-rotate-file');
 
 const transport1 = new winston.transports.DailyRotateFile({
-	filename: 'logs/SkillCamp/' + new Date().getFullYear() + '/' + (parseInt(new Date().getMonth()) + 1) + '/' + new Date().getDate() + '/users/%DATE% full.log',
+	filename: 'logs/SkillCamp/' + new Date().getFullYear() + '/users/%DATE% full.log',
 	datePattern: 'YYYY-MM-DD',
 	zippedArchive: true,
-	maxSize: '20m',
+	maxSize: '10m',
 });
 
 const transport2 = new winston.transports.DailyRotateFile({
 	level: 'error',
-	filename: 'logs/SkillCamp/' + new Date().getFullYear() + '/' + (parseInt(new Date().getMonth()) + 1) + '/' + new Date().getDate() + '/users/%DATE% error.log',
+	filename: 'logs/SkillCamp/' + new Date().getFullYear() + '/users/%DATE% error.log',
 	datePattern: 'YYYY-MM-DD',
 	zippedArchive: true,
-	maxSize: '20m',
+	maxSize: '10m',
 });
 
 const logger = winston.createLogger({
@@ -50,52 +50,12 @@ module.exports = {
 		}
 		// Get guild
 		const guild = member.guild;
-		const guildId = guild.id;
-		const guildName = guild.name;
-		const userId = member.user.id;
-		// get number of users
-		const userCount = member.guild.members.cache.size;
-		// get number of members
-		const memberCount = member.guild.members.cache.filter(member => !member.user.bot).size;
-		// get number of bots
-		const botCount = member.guild.members.cache.filter(m => m.user.bot).size;
-
 
 		let embed, role;
 		logger.info(`New member ${member.user.tag} (${member.user.id}) joined the SkillCamp: ${guild.name} server`);
-		console.log(`${guildName} member count: ${memberCount}`);
-
-		embed = new EmbedBuilder()
-			.setTitle(`Member Joined`)
-			.setDescription(`<@${member.user.id}> has joined the server.`)
-			.setColor('#32f524');
-		let logChannel = member.guild.channels.cache.find(ch => ch.name === 'system-logs');
-		if (!logChannel) {
-			logChannel = member.guild.channels.cache.find(ch => ch.name === 'system-log');
-		}
-		if (!logChannel) {
-			logChannel = member.guild.channels.cache.find(ch => ch.name === 'log');
-		}
-		if (!logChannel) {
-			logChannel = member.guild.channels.cache.find(ch => ch.name === 'logs');
-		}
-
-		console.log(logChannel);
-
-		// send message
-		logChannel.send({ embeds: [embed] });
-
-		if (member.user.bot) {
-			role = member.guild.roles.cache.find(role => role.name === "Bots");
-			member.roles.add(role);
-		}
 
 		if (member.guild.id == guildData.CodeCamp.guildId) {
 			console.log("CodeCamp member joined");
-			if (!member.user.bot) {
-				role = member.guild.roles.cache.find(role => role.name === "Coders");
-				member.roles.add(role);
-			}
 			let welcomeChannel = member.guild.channels.cache.find(ch => ch.name === 'welcome');
 			if (!welcomeChannel) {
 				welcomeChannel = member.guild.channels.cache.find(ch => ch.name === 'general-chat');
@@ -111,7 +71,6 @@ module.exports = {
 				role = member.guild.roles.cache.find(role => role.name === "Coders");
 				member.roles.add(role);
 			}
-
 			const welcomeMsg = welcomeChannel.send(`Welcome to CodeCamp, ${member}!`);
 
 			embed = new EmbedBuilder()

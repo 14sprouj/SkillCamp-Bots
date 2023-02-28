@@ -1,23 +1,24 @@
 require('dotenv').config();
 const io = require('@pm2/io');
+const mysql = require('mysql2');
 const env = process.env.environment;
 const winston = require('winston');
 const { createLogger, format, transports } = require('winston');
 require('winston-daily-rotate-file');
 
 const transport1 = new winston.transports.DailyRotateFile({
-	filename: 'logs/SkillCamp/' + new Date().getFullYear() + '/' + (parseInt(new Date().getMonth()) + 1) + '/' + new Date().getDate() + '/commands/%DATE% full.log',
-	datePattern: 'YYYY-MM-DD HH',
+	filename: 'logs/SkillCamp/' + new Date().getFullYear() + '/commands/%DATE% full.log',
+	datePattern: 'YYYY-MM-DD',
 	zippedArchive: true,
-	maxSize: '20m',
+	maxSize: '10m',
 });
 
 const transport2 = new winston.transports.DailyRotateFile({
 	level: 'error',
-	filename: 'logs/SkillCamp/' + new Date().getFullYear() + '/' + (parseInt(new Date().getMonth()) + 1) + '/' + new Date().getDate() + '/commands/%DATE% error.log',
-	datePattern: 'YYYY-MM-DD HH',
+	filename: 'logs/SkillCamp/' + new Date().getFullYear() + '/commands/%DATE% error.log',
+	datePattern: 'YYYY-MM-DD',
 	zippedArchive: true,
-	maxSize: '20m',
+	maxSize: '10m',
 });
 
 const logger = winston.createLogger({
@@ -58,7 +59,7 @@ module.exports = {
 		await interaction.reply({ content: 'The roles messages have been sent to the channel!', ephemeral: true });
 
 		// get channel
-		const channel = guild.channels.cache.get(guildData.CampMaster.channels.tagYourselfTest.channelID);
+		const channel = guild.channels.cache.find(ch => ch.name === 'tag-yourself-test');
 		// get all messages in channel
 		const messages = await channel.messages.fetch();
 		// for each message delete it
@@ -431,7 +432,6 @@ module.exports = {
 						.setEmoji('👪')
 						.setStyle(ButtonStyle.Primary),
 				);
-
 			await channel.send({ embeds: [embed], components: [row, row2, row3, row4] });
 
 			embed = new EmbedBuilder()
@@ -526,7 +526,6 @@ module.exports = {
 				.setTitle('Groups')
 				.setDescription('You can also apply to join the following groups!\n**Comedy Pilots Group:** https://forms.gle/bAbnM58cToqUhnKt7 \n**Advanced Lab:** https://forms.gle/w9LJcwqD3MsbYBny5')
 				.setColor('#04FA00');
-
 			await channel.send({ embeds: [embed] });
 		} else if (guildName == 'CampMaster' || guildName == "CodeCamp") {
 			embed = new EmbedBuilder()
@@ -557,7 +556,6 @@ module.exports = {
 				.setTitle('Classes')
 				.setDescription('Get notified when a class is starting')
 				.setColor('#04ef3e');
-
 			row = new ActionRowBuilder()
 				.addComponents(
 					new ButtonBuilder()
@@ -582,7 +580,6 @@ module.exports = {
 				.setTitle('Languages')
 				.setDescription('What languages do you know and what would you like to learn?')
 				.setColor('#04ef3e');
-
 			row = new ActionRowBuilder()
 				.addComponents(
 					new ButtonBuilder()
@@ -647,12 +644,12 @@ module.exports = {
 						.setEmoji('<:VisualBasic:1038146171241234523>')
 						.setStyle(ButtonStyle.Secondary),
 				);
+			await channel.send({ embeds: [embed], components: [row, row2, row3] });
 		} else if (guildName == "ToonCamp") {
 			embed = new EmbedBuilder()
 				.setTitle('Specialities')
 				.setDescription('What are your specialities?')
 				.setColor('#04ef3e');
-
 			row = new ActionRowBuilder()
 				.addComponents(
 					new ButtonBuilder()
