@@ -1,6 +1,7 @@
 require('dotenv').config();
 const env = process.env.environment;
 const io = require('@pm2/io');
+const mysql = require('mysql2');
 const fs = require('node:fs');
 const path = require('node:path');
 const { EmbedBuilder } = require('discord.js');
@@ -9,18 +10,18 @@ const { createLogger, format, transports } = require('winston');
 require('winston-daily-rotate-file');
 
 const transport1 = new winston.transports.DailyRotateFile({
-	filename: 'logs/CampMaster/' + new Date().getFullYear() + '/' + (parseInt(new Date().getMonth()) + 1) + '/' + new Date().getDate() + '/users/%DATE% full.log',
+	filename: 'logs/CampMaster/' + new Date().getFullYear() + '/users/%DATE% full.log',
 	datePattern: 'YYYY-MM-DD',
 	zippedArchive: true,
-	maxSize: '20m',
+	maxSize: '10m',
 });
 
 const transport2 = new winston.transports.DailyRotateFile({
 	level: 'error',
-	filename: 'logs/CampMaster/' + new Date().getFullYear() + '/' + (parseInt(new Date().getMonth()) + 1) + '/' + new Date().getDate() + '/users/%DATE% error.log',
+	filename: 'logs/CampMaster/' + new Date().getFullYear() + '/users/%DATE% error.log',
 	datePattern: 'YYYY-MM-DD',
 	zippedArchive: true,
-	maxSize: '20m',
+	maxSize: '10m',
 });
 
 const logger = winston.createLogger({
@@ -41,9 +42,7 @@ const logger = winston.createLogger({
 
 const { guildData } = require('../../data/guildData.json');
 const SkillCampGuildIds = guildData.guildIDs;
-// TODO convert to mysql2
-const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
-const xhr = new XMLHttpRequest();
+// !TODO convert to mysql2
 
 module.exports = {
 	name: 'guildMemberAdd',
@@ -62,7 +61,6 @@ module.exports = {
 		const memberCount = member.guild.members.cache.filter(member => !member.user.bot).size;
 		// get number of bots
 		const botCount = member.guild.members.cache.filter(m => m.user.bot).size;
-
 
 		let embed, role;
 		logger.info(`New member ${member.user.tag} (${member.user.id}) joined the SkillCamp: ${guild.name} server`);
@@ -83,14 +81,16 @@ module.exports = {
 			logChannel = member.guild.channels.cache.find(ch => ch.name === 'logs');
 		}
 
-		console.log(logChannel);
-
 		// send message
 		logChannel.send({ embeds: [embed] });
 
 		if (member.user.bot) {
 			role = member.guild.roles.cache.find(role => role.name === "Bots");
 			member.roles.add(role);
+		}
+		const statsChannel = member.guild.channels.cache.find(ch => ch.name === 'stats');
+		if (!statsChannel) {
+			return;
 		}
 
 		if (member.guild.id == guildData.CodeCamp.guildId) {
@@ -99,99 +99,91 @@ module.exports = {
 				role = member.guild.roles.cache.find(role => role.name === "Coders");
 				member.roles.add(role);
 			}
-			let welcomeChannel = member.guild.channels.cache.find(ch => ch.name === 'welcome');
-			if (!welcomeChannel) {
-				welcomeChannel = member.guild.channels.cache.find(ch => ch.name === 'general-chat');
-			}
-			if (!welcomeChannel) {
-				welcomeChannel = member.guild.channels.cache.find(ch => ch.name === 'coding-chat');
-			}
-			if (!welcomeChannel) {
-				logger.error("Unable to find welcome channel in CodeCamp");
-			}
 
-			if (!member.user.bot) {
-				role = member.guild.roles.cache.find(role => role.name === "Coders");
-				member.roles.add(role);
-			}
-
-			const welcomeMsg = welcomeChannel.send(`Welcome to CodeCamp, ${member}!`);
-
-			embed = new EmbedBuilder()
-				.setTitle('Welcome to CodeCamp!')
-				.setDescription(`We are a computer coding community with members from across the world. We recommend you do three things:\n1. Get roles in tag-yourself\n2. Tell us about yourself in introduce-yourself\n3. Get chatting. We can often be found talking in coding-chat. Feel free to make use of all the channels - we like conversations here.`);
-			welcomeChannel.send({ embeds: [embed] });
-
-			const statsChannel = member.guild.channels.cache.find(ch => ch.name === 'stats');
-			if (!statsChannel) {
-				return;
-			}
 			statsChannel.messages.get(guildData.CodeCamp.statsMsgs.Users).then(message => {
 				message.edit(`**Users:** ${member.guild.members.cache.size}`);
 			});
 			statsChannel.messages.get(guildData.CodeCamp.statsMsgs.Members).then(message => {
 				message.edit(`**Members:** ${member.guild.members.cache.filter(member => !member.user.bot).size}`);
 			});
-
-			try {
-				welcomeMsg.react('👋');
-			} catch (error) {
-				logger.error("Unable to react to welcome message");
-			}
 		} else if (member.guild.id == guildData.ScriptCamp.guildId) {
 			console.log("ScriptCamp member joined");
 			if (!member.user.bot) {
 				role = member.guild.roles.cache.find(role => role.name === "Screenwriter");
 				member.roles.add(role);
 			}
+		} else if (member.guild.id == guildData.WordCamp.guildId) {
+			console.log("WordCamp member joined");
+			if (!member.user.bot) {
+				role = member.guild.roles.cache.find(role => role.name === "Camper");
+				member.roles.add(role);
+			}
+		} else if (member.guild.id == guildData.CampMaster.guildId) {
+			console.log("CampMaster member joined");
+			if (!member.user.bot) {
+				role = member.guild.roles.cache.find(role => role.name === "Camper");
+				member.roles.add(role);
+			}
+		} else if (member.guild.id == guildData.FilmCamp.guildId) {
+			console.log("FilmCamp member joined");
+			if (!member.user.bot) {
+				role = member.guild.roles.cache.find(role => role.name === "Filmmaker");
+				member.roles.add(role);
+			}
+		} else if (member.guild.id == guildData.MusicCamp.guildId) {
+			console.log("MusicCamp member joined");
+			if (!member.user.bot) {
+				role = member.guild.roles.cache.find(role => role.name === "Musician");
+				member.roles.add(role);
+			}
+		} else if (member.guild.id == guildData.ToonCamp.guildId) {
+			console.log("ToonCamp member joined");
+			if (!member.user.bot) {
+				role = member.guild.roles.cache.find(role => role.name === "Animator");
+				member.roles.add(role);
+			}
+		} else if (member.guild.id == guildData.GameCamp.guildId) {
+			console.log("GameCamp member joined");
+			if (!member.user.bot) {
+				role = member.guild.roles.cache.find(role => role.name === "Gamer");
+				member.roles.add(role);
+			}
+		} else if (member.guild.id == guildData.ArtCamp.guildId) {
+			console.log("ArtCamp member joined");
+			if (!member.user.bot) {
+				role = member.guild.roles.cache.find(role => role.name === "Artist");
+				member.roles.add(role);
+			}
+		} else if (member.guild.id == guildData.CreatorCamp.guildId) {
+			console.log("CreatorCamp member joined");
+			if (!member.user.bot) {
+				role = member.guild.roles.cache.find(role => role.name === "Creator");
+				member.roles.add(role);
+			}
+		} else if (member.guild.id == guildData.DesignCamp.guildId) {
+			console.log("DesignCamp member joined");
+			if (!member.user.bot) {
+				role = member.guild.roles.cache.find(role => role.name === "Designer");
+				member.roles.add(role);
+			}
+		} else if (member.guild.id == guildData.SkillCamp.guildId) {
+			console.log("SkillCamp member joined");
+			if (!member.user.bot) {
+				role = member.guild.roles.cache.find(role => role.name === "Camper");
+				member.roles.add(role);
+			}
+		} else if (member.guild.id == guildData.LingoCamp.guildId) {
+			console.log("LingoCamp member joined");
+			if (!member.user.bot) {
+				role = member.guild.roles.cache.find(role => role.name === "Camper");
+				member.roles.add(role);
+			}
 		}
 
-		// TODO Change to mySQL
-		xhr.open("POST", "https://joelsprouse.co.uk/SkillCamp/Website/api/users.php", true);
-		xhr.setRequestHeader("Content-Type", "application/json");
-		xhr.setRequestHeader("Authorization", "Bearer " + process.env.SKILLCAMP_API_KEY);
-		xhr.send(JSON.stringify({
-			"discord_id": userId,
-			"discord_username": member.user.username,
-			"discord_discriminator": member.user.discriminator,
-			"dataneeded": ["tier"],
-			"server": guild.name,
-		}));
-		xhr.onreadystatechange = function () {
-			if (this.readyState == 4 && this.status == 200) {
-				const response = JSON.parse(this.responseText);
-				const tier = response.tier;
-				// TODO Change tiers to roles
-				if (tier == "bronze") {
-					member.roles.add(guild.roles.cache.find(role => role.name === "Bronze"));
-				} else if (tier == "silver") {
-					member.roles.add(guild.roles.cache.find(role => role.name === "Silver"));
-				} else if (tier == "gold") {
-					member.roles.add(guild.roles.cache.find(role => role.name === "Gold"));
-				} else if (tier == "platinum") {
-					member.roles.add(guild.roles.cache.find(role => role.name === "Platinum"));
-				} else if (tier == "diamond") {
-					member.roles.add(guild.roles.cache.find(role => role.name === "Diamond"));
-				} else if (tier == "master") {
-					member.roles.add(guild.roles.cache.find(role => role.name === "Master"));
-				} else if (tier == "grandmaster") {
-					member.roles.add(guild.roles.cache.find(role => role.name === "Grandmaster"));
-				}
-			} else if (this.readyState == 4 && this.status == 404) {
-				const response = JSON.parse(this.responseText);
-				// get channel
-				let channel = member.guild.channels.cache.find(ch => ch.name === 'mod-bots');
-				if (!channel) {
-					channel = member.guild.channels.cache.find(ch => ch.name === 'bots');
-				}
-				embed = new EmbedBuilder()
-					.setColor('#ff0000')
-					.setTitle('Error')
-					.setDescription("<@708297454596128852> I am unable to connect to SkillCamp member API :sad:\n", response.message)
-					.setTimestamp();
-				channel.send({ embeds: [embed] });
-			}
-		};
+		// TODO Connect to database
+		// TODO check if user is in database
+		// TODO get user data
+		// TODO if not, add user to database
 
 		try {
 			console.log(`${guildName} member count: ${memberCount}`);
@@ -201,17 +193,61 @@ module.exports = {
 				const SkillCamp = JSON.parse(data);
 				// update member count
 				if (member.guild.id == guildData.CodeCamp.guildId) {
-					logger.info(`New CodeCamp member! Member count: ${memberCount}`);
+					SkillCamp.Discord.CodeCamp.UserCount = userCount;
 					SkillCamp.Discord.CodeCamp.MemberCount = memberCount;
+					SkillCamp.Discord.CodeCamp.BotCount = botCount;
 				} else if (member.guild.id == guildData.ScriptCamp.guildId) {
+					SkillCamp.Discord.ScriptCamp.UserCount = userCount;
 					SkillCamp.Discord.ScriptCamp.MemberCount = memberCount;
+					SkillCamp.Discord.ScriptCamp.BotCount = botCount;
 				} else if (member.guild.id == guildData.DesignCamp.guildId) {
+					SkillCamp.Discord.DesignCamp.UserCount = userCount;
 					SkillCamp.Discord.DesignCamp.MemberCount = memberCount;
+					SkillCamp.Discord.DesignCamp.BotCount = botCount;
 				} else if (member.guild.id == guildData.WordCamp.guildId) {
+					SkillCamp.Discord.WordCamp.UserCount = userCount;
 					SkillCamp.Discord.WordCamp.MemberCount = memberCount;
+					SkillCamp.Discord.WordCamp.BotCount = botCount;
 				} else if (member.guild.id == guildData.CampMaster.guildId) {
+					SkillCamp.Discord.CampMaster.UserCount = userCount;
 					SkillCamp.Discord.CampMaster.MemberCount = memberCount;
+					SkillCamp.Discord.CampMaster.BotCount = botCount;
+				} else if (member.guild.id == guildData.FilmCamp.guildId) {
+					SkillCamp.Discord.FilmCamp.UserCount = userCount;
+					SkillCamp.Discord.FilmCamp.MemberCount = memberCount;
+					SkillCamp.Discord.FilmCamp.BotCount = botCount;
+				} else if (member.guild.id == guildData.MusicCamp.guildId) {
+					SkillCamp.Discord.MusicCamp.UserCount = userCount;
+					SkillCamp.Discord.MusicCamp.MemberCount = memberCount;
+					SkillCamp.Discord.MusicCamp.BotCount = botCount;
+				} else if (member.guild.id == guildData.ToonCamp.guildId) {
+					SkillCamp.Discord.ToonCamp.UserCount = userCount;
+					SkillCamp.Discord.ToonCamp.MemberCount = memberCount;
+					SkillCamp.Discord.ToonCamp.BotCount = botCount;
+				} else if (member.guild.id == guildData.GameCamp.guildId) {
+					SkillCamp.Discord.GameCamp.UserCount = userCount;
+					SkillCamp.Discord.GameCamp.MemberCount = memberCount;
+					SkillCamp.Discord.GameCamp.BotCount = botCount;
+				} else if (member.guild.id == guildData.ArtCamp.guildId) {
+					SkillCamp.Discord.ArtCamp.UserCount = userCount;
+					SkillCamp.Discord.ArtCamp.MemberCount = memberCount;
+					SkillCamp.Discord.ArtCamp.BotCount = botCount;
+				} else if (member.guild.id == guildData.CreatorCamp.guildId) {
+					SkillCamp.Discord.CreatorCamp.UserCount = userCount;
+					SkillCamp.Discord.CreatorCamp.MemberCount = memberCount;
+					SkillCamp.Discord.CreatorCamp.BotCount = botCount;
+				} else if (member.guild.id == guildData.SkillCamp.guildId) {
+					SkillCamp.Discord.SkillCamp.UserCount = userCount;
+					SkillCamp.Discord.SkillCamp.MemberCount = memberCount;
+					SkillCamp.Discord.SkillCamp.BotCount = botCount;
+				} else if (member.guild.id == guildData.LingoCamp.guildId) {
+					SkillCamp.Discord.LingoCamp.UserCount = userCount;
+					SkillCamp.Discord.LingoCamp.MemberCount = memberCount;
+					SkillCamp.Discord.LingoCamp.BotCount = botCount;
 				}
+
+
+				SkillCamp = JSON.stringify('"SkillCamp": {' + SkillCamp + '}', null, 2);
 
 				// save to JSON file
 				fs.writeFile(`./data/SkillCamp.json`, JSON.stringify(SkillCamp), (err) => {

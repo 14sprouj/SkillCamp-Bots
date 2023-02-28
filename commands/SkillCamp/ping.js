@@ -7,18 +7,18 @@ const { createLogger, format, transports } = require('winston');
 require('winston-daily-rotate-file');
 
 const transport1 = new winston.transports.DailyRotateFile({
-	filename: 'logs/SkillCamp/' + new Date().getFullYear() + '/' + (parseInt(new Date().getMonth()) + 1) + '/' + new Date().getDate() + '/commands/%DATE% full.log',
-	datePattern: 'YYYY-MM-DD HH',
+	filename: 'logs/SkillCamp/' + new Date().getFullYear() + '/commands/%DATE% full.log',
+	datePattern: 'YYYY-MM-DD',
 	zippedArchive: true,
-	maxSize: '20m',
+	maxSize: '10m',
 });
 
 const transport2 = new winston.transports.DailyRotateFile({
 	level: 'error',
-	filename: 'logs/SkillCamp/' + new Date().getFullYear() + '/' + (parseInt(new Date().getMonth()) + 1) + '/' + new Date().getDate() + '/commands/%DATE% error.log',
-	datePattern: 'YYYY-MM-DD HH',
+	filename: 'logs/SkillCamp/' + new Date().getFullYear() + '/commands/%DATE% error.log',
+	datePattern: 'YYYY-MM-DD',
 	zippedArchive: true,
-	maxSize: '20m',
+	maxSize: '10m',
 });
 
 const logger = winston.createLogger({
@@ -54,5 +54,63 @@ module.exports = {
 		} else {
 			logger.info(`${interaction.user.id} used the "/ping" command in a DM.`);
 		}
+		// connect to the database
+		const connection = mysql.createConnection({
+			host: process.env.DB_HOST,
+			user: process.env.DB_USER,
+			password: process.env.DB_PASSWORD,
+			database: process.env.DB_NAME,
+			port: process.env.DB_PORT,
+		});
+		connection.connect(function (err) {
+			if (err) {
+				logger.error(err);
+				interaction.editReply({ content: 'Error: Unable to connect to the database', ephemeral: true });
+				console.error('error connecting: ' + err.stack);
+				return;
+			}
+			connection.query(`SELECT * FROM users WHERE discordUserID = '${interaction.user.id}'`, (error, results, fields) => {
+				if (error) {
+					console.error(error);
+					logger.error(error);
+					return;
+				}
+				if (results.length == 0) {
+					connection.query(`INSERT INTO users (discordUserID, discordUsername, discordDiscriminator) VALUES ('${interaction.user.id}', '${interaction.user.username}', '${interaction.user.discriminator}')`, (error, results, fields) => {
+						if (error) {
+							console.error(error);
+							logger.error(error);
+							return;
+						}
+					});
+				}
+
+				if (results.length > 1) {
+					console.error(`Multiple users with same ID: ${member.id}`);
+					logger.error(`Multiple users with same ID: ${member.id}`);
+				}
+			});
+			connection.query(`SELECT * FROM users WHERE discordUserID = '${userid}'`, (error, results, fields) => {
+				if (error) {
+					console.error(error);
+					logger.error(error);
+					return;
+				}
+				if (results.length == 0) {
+					connection.query(`INSERT INTO users (discordUserID, discordUsername, discordDiscriminator) VALUES ('${giver}', '${interaction.options.getUser('user').username}', '${interaction.options.getUser('user').discriminator}')`, (error, results, fields) => {
+						if (error) {
+							console.error(error);
+							logger.error(error);
+							return;
+						}
+					});
+				}
+
+				if (results.length > 1) {
+					console.error(`Multiple users with same ID: ${interaction.options.getUser('user').id}`);
+					logger.error(`Multiple users with same ID: ${interaction.options.getUser('user').id}`);
+				}
+			});
+		});
 	},
 };
