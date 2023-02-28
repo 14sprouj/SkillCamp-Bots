@@ -8,18 +8,18 @@ const { createLogger, format, transports } = require('winston');
 require('winston-daily-rotate-file');
 
 const transport1 = new winston.transports.DailyRotateFile({
-	filename: 'logs/SkillCamp/' + new Date().getFullYear() + '/' + (parseInt(new Date().getMonth()) + 1) + '/' + new Date().getDate() + '/%DATE% full.log',
-	datePattern: 'YYYY-MM-DD HH',
+	filename: 'logs/SkillCamp/' + new Date().getFullYear() + '/%DATE% full.log',
+	datePattern: 'YYYY-MM-DD',
 	//zippedArchive: true,
-	maxSize: '20m',
+	maxSize: '10m',
 });
 
 const transport2 = new winston.transports.DailyRotateFile({
 	level: 'error',
-	filename: 'logs/SkillCamp/' + new Date().getFullYear() + '/' + (parseInt(new Date().getMonth()) + 1) + '/' + new Date().getDate() + '/%DATE% error.log',
-	datePattern: 'YYYY-MM-DD HH',
+	filename: 'logs/SkillCamp/' + new Date().getFullYear() + '/%DATE% error.log',
+	datePattern: 'YYYY-MM-DD',
 	//zippedArchive: true,
-	maxSize: '20m',
+	maxSize: '10m',
 });
 
 const logger = winston.createLogger({
@@ -47,17 +47,25 @@ module.exports = {
 	name: 'ready',
 	once: true,
 	execute(client) {
-		let embed;
-		setInterval(() => {
-			// connect to the database
-			const connection = mysql.createConnection({
-				host: process.env.DB_HOST,
-				user: process.env.DB_USER,
-				password: process.env.DB_PASSWORD,
-				port: process.env.DB_PORT,
-				database: process.env.DB_NAME,
+		function confirm(MessageID) {
+			// update database
+			connection.query(`UPDATE msgQueue SET Sent = 1 WHERE MessageID = ${MessageID}`, (error2) => {
+				if (error2) {
+					console.error(error2);
+					logger.error(error2);
+				}
 			});
-
+		}
+		let embed;
+		// connect to the database
+		const connection = mysql.createConnection({
+			host: process.env.DB_HOST,
+			user: process.env.DB_USER,
+			password: process.env.DB_PASSWORD,
+			port: process.env.DB_PORT,
+			database: process.env.DB_NAME,
+		});
+		setInterval(() => {
 			const d = new Date();
 			const date = d.getDate();
 			const day = d.getDay();
@@ -130,21 +138,14 @@ module.exports = {
 					console.error('Error connecting: ' + err.stack);
 					return;
 				}
-				function confirm(MessageID) {
-					// update database
-					connection.query(`UPDATE msgQueue SET Sent = 1 WHERE MessageID = ${MessageID}`, (error2) => {
-						if (error2) {
-							console.error(error2);
-							logger.error(error2);
-						}
-					});
-				}
-				connection.query(`SELECT * FROM queuedMsgs WHERE \`Datetime\` <= '${fullDate}' and Sent = 0`, (error, results, fields) => {
+
+				connection.query(`SELECT * FROM queuedMsgs WHERE \`Datetime\` <= '${fullDate}'`, (error, results, fields) => {
 					if (error) {
 						console.error(error);
 						logger.error(error);
 						return;
 					}
+
 					console.log(results);
 
 					results.forEach(result => {
@@ -165,187 +166,239 @@ module.exports = {
 							return;
 						}
 
-						// TODO Check if channel is a forum channel
-						if (channel.type == 15) {
-							if (result.Embed == 1) {
-								// send embed
-								embed = new EmbedBuilder();
-								if (result.EmbedColor) {
-									embed.setColor(result.EmbedColor);
-								}
-								embed.setTitle(result.EmbedTitle);
-								embed.setDescription(result.EmbedDescription);
-								if (result.EmbedImage) {
-									embed.setImage(result.EmbedImage);
-								}
-								if (result.EmbedThumbnail) {
-									embed.setThumbnail(result.EmbedThumbnail);
-								}
-								if (result.EmbedFooter) {
-									let footer = {};
-									footer = {
-										text: '',
-									};
-									if (result.EmbedFooterIcon) {
-										footer.icon_url = result.EmbedFooterIcon;
-									}
-									footer.text = result.EmbedFooter;
-									console.log(footer);
-									embed.setFooter(footer);
-								}
-								if (result.EmbedAuthor) {
-									let author = {};
-									author = {
-										name: '',
-									};
-									if (result.EmbedAuthorIcon) {
-										author.iconURL = result.EmbedAuthorIcon;
-									}
-									if (result.EmbedAuthorURL) {
-										author.url = result.EmbedAuthorIcon;
-									}
-									author.name = result.EmbedAuthor;
-									console.log(author);
-									embed.setAuthor(author);
-								}
-								if (result.EmbedURL) {
-									embed.setURL(result.EmbedURL);
-								}
-								if (result.EmbedTimestamp) {
-									embed.setTimestamp();
-								}
-								// create forum post
-								channel.threads.create({
-									name: result.PostTitle,
-									autoArchiveDuration: 1440,
-									type: 'GUILD_PUBLIC_THREAD',
-									reason: 'Scheduled post',
-									message: {
-										content: result.Message,
-										embeds: [embed],
-									},
-								});
+						if (result.Embed == 1) {
+							// send embed
+							embed = new EmbedBuilder();
+							if (result.EmbedColor) {
+								embed.setColor(result.EmbedColor);
 							}
+							embed.setTitle(result.EmbedTitle);
+							embed.setDescription(result.EmbedDescription);
+							if (result.EmbedImage) {
+								embed.setImage(result.EmbedImage);
+							}
+							if (result.EmbedThumbnail) {
+								embed.setThumbnail(result.EmbedThumbnail);
+							}
+							if (result.EmbedFooter) {
+								let footer = {};
+								footer = {
+									text: '',
+								};
+								if (result.EmbedFooterIcon) {
+									footer.icon_url = result.EmbedFooterIcon;
+								}
+								footer.text = result.EmbedFooter;
+								console.log(footer);
+								embed.setFooter(footer);
+							}
+							if (result.EmbedAuthor) {
+								let author = {};
+								author = {
+									name: '',
+								};
+								if (result.EmbedAuthorIcon) {
+									author.iconURL = result.EmbedAuthorIcon;
+								}
+								if (result.EmbedAuthorURL) {
+									author.url = result.EmbedAuthorURL;
+								}
+								author.name = result.EmbedAuthor;
+								console.log(author);
+								embed.setAuthor(author);
+							}
+							if (result.EmbedURL) {
+								embed.setURL(result.EmbedURL);
+							}
+							if (result.EmbedTimestamp) {
+								embed.setTimestamp();
+							}
+						}
+
+						messageSend = { content: "" };
+
+						if (result.Message) {
+							messageSend.content = result.Message;
+						}
+
+						if (result.Embed == 1) {
+							messageSend.embeds = [embed];
+						}
+
+						// Check if channel is a forum channel
+						if (channel.type == 15) {
+							// create forum post
+							channel.threads.create({
+								name: result.PostTitle,
+								autoArchiveDuration: 1440,
+								type: 'GUILD_PUBLIC_THREAD',
+								reason: 'Scheduled post',
+								message: messageSend,
+							});
 							confirm(result.MessageID);
 						} else if (channel.type == 2 || channel.type == 0 || channel.type == 5 || channel.type == 13 || channel.type == 5 || channel.type == 11 || channel.type == 12) {
-							if (result.Embed == 1) {
-								// send embed
-								embed = new EmbedBuilder();
-								if (result.EmbedColor) {
-									embed.setColor(result.EmbedColor);
-								}
-								embed.setTitle(result.EmbedTitle);
-								embed.setDescription(result.EmbedDescription);
-								if (result.EmbedImage) {
-									embed.setImage(result.EmbedImage);
-								}
-								if (result.EmbedThumbnail) {
-									embed.setThumbnail(result.EmbedThumbnail);
-								}
-								if (result.EmbedFooter) {
-									let footer = {};
-									footer = {
-										text: '',
-									};
-									if (result.EmbedFooterIcon) {
-										footer.icon_url = result.EmbedFooterIcon;
-									}
-									footer.text = result.EmbedFooter;
-									console.log(footer);
-									embed.setFooter(footer);
-								}
-								if (result.EmbedAuthor) {
-									let author = {};
-									author = {
-										name: '',
-									};
-									if (result.EmbedAuthorIcon) {
-										author.iconURL = result.EmbedAuthorIcon;
-									}
-									if (result.EmbedAuthorURL) {
-										author.url = result.EmbedAuthorIcon;
-									}
-									author.name = result.EmbedAuthorName;
-									console.log(author);
-									embed.setAuthor(author);
-								}
-								if (result.URL) {
-									embed.setURL(result.URL);
-								}
-								if (result.EmbedTimestamp) {
-									embed.setTimestamp();
-								}
-								channel.send({ content: result.Message, embeds: [embed] });
-								confirm(result.MessageID);
-							} else {
-								// send message
-								channel.send(result.Message);
-								confirm(result.MessageID);
-							}
+							// send message
+							channel.send(messageSend);
+							confirm(result.MessageID);
 						} else {
 							console.error(`Channel type not supported: ${channel.type}`);
 							logger.error(`Channel type not supported: ${channel.type}`);
 						}
 					});
 				});
+			});
+		}, 1000 * 60);
+		setInterval(() => {
+			const d = new Date();
+			const date = d.getDate();
+			const day = d.getDay();
+			const hour = d.getHours();
+			const minute = d.getMinutes();
+			connection.query(`SELECT * FROM timedMsgs WHERE Hour = '${hour}' and Minute = '${minute}' and Active = '1'`, (error, results, fields) => {
+				if (error) {
+					console.error(error);
+					logger.error(error);
+					return;
+				}
+				console.log(results);
 
-				connection.query(`SELECT * FROM timedMsgs WHERE Hour = '${hour}' and Minute = '${minute}' and Active = 1`, (error, results, fields) => {
-					if (error) {
-						console.error(error);
-						logger.error(error);
+				results.forEach((result) => {
+					console.log(result);
+					if (result.Day != day && result.Day != 7) {
 						return;
 					}
-					console.log(results);
+					// get guild by name
+					const guild = client.guilds.cache.get(result.guildID);
 
-					results.forEach((result) => {
-						if (result.Day != day && result.Day != 7) {
-							return;
+					// get channel by id
+					const channel = guild.channels.cache.get(result.channelID);
+
+					if (channel.type == 15) {
+						if (result.Embed == 1) {
+							// send embed
+							embed = new EmbedBuilder();
+							if (result.EmbedColor) {
+								embed.setColor(result.EmbedColor);
+							}
+							embed.setTitle(result.EmbedTitle);
+							embed.setDescription(result.EmbedDescription);
+							if (result.EmbedImage) {
+								embed.setImage(result.EmbedImage);
+							}
+							if (result.EmbedThumbnail) {
+								embed.setThumbnail(result.EmbedThumbnail);
+							}
+							if (result.EmbedFooter) {
+								let footer = {};
+								footer = {
+									text: '',
+								};
+								if (result.EmbedFooterIcon) {
+									footer.icon_url = result.EmbedFooterIcon;
+								}
+								footer.text = result.EmbedFooter;
+								console.log(footer);
+								embed.setFooter(footer);
+							}
+							if (result.EmbedAuthor) {
+								let author = {};
+								author = {
+									name: '',
+								};
+								if (result.EmbedAuthorIcon) {
+									author.iconURL = result.EmbedAuthorIcon;
+								}
+								if (result.EmbedAuthorURL) {
+									author.url = result.EmbedAuthorURL;
+								}
+								author.name = result.EmbedAuthor;
+								console.log(author);
+								embed.setAuthor(author);
+							}
+							if (result.EmbedURL) {
+								embed.setURL(result.EmbedURL);
+							}
+							if (result.EmbedTimestamp) {
+								embed.setTimestamp();
+							}
+							// create forum post
+							channel.threads.create({
+								name: result.PostTitle,
+								autoArchiveDuration: 1440,
+								type: 'GUILD_PUBLIC_THREAD',
+								reason: 'Scheduled post',
+								message: {
+									content: result.Message,
+									embeds: [embed],
+								},
+							});
 						}
-						// get guild by name
-						const guild = client.guilds.cache.get(results[0].guildID);
-
-						// get channel by id
-						const channel = guild.channels.cache.get(results[0].channelID);
-
-						// send message
-						channel.send(results[0].Message);
-					});
-				});
-				//connection.end();
-			}, 1000 * 30);
-
-			setInterval(() => {
-				// for each guild
-				client.guilds.cache.forEach((guild) => {
-					console.log(`Guild: ${guild.name} (${guild.id})`);
-					// get all members
-					guild.members.cache.forEach((member) => {
-						// for each member
-						console.log(`Member: ${member.user.username} (${member.id})`);
-						connection.query(`SELECT * FROM users WHERE discordUserID = '${member.id}'`, (error, results, fields) => {
-							if (error) {
-								console.error(error);
-								logger.error(error);
-								return;
+						confirm(result.MessageID);
+					} else if (channel.type == 2 || channel.type == 0 || channel.type == 5 || channel.type == 13 || channel.type == 5 || channel.type == 11 || channel.type == 12) {
+						if (result.Embed == 1) {
+							// send embed
+							embed = new EmbedBuilder();
+							if (result.EmbedColor) {
+								embed.setColor(result.EmbedColor);
 							}
-							if (results.length == 0) {
-								connection.query(`INSERT INTO users (discordUserID, discordUsername, discordDiscriminator) VALUES ('${member.id}', '${member.user.username}', '${member.user.discriminator}')`, (error, results, fields) => {
-									if (error) {
-										console.error(error);
-										logger.error(error);
-										return;
-									}
-								});
+							embed.setTitle(result.EmbedTitle);
+							embed.setDescription(result.EmbedDescription);
+							if (result.EmbedImage) {
+								embed.setImage(result.EmbedImage);
 							}
-
-							if (results.length > 1) {
-								console.error(`Multiple users with same ID: ${member.id}`);
-								logger.error(`Multiple users with same ID: ${member.id}`);
+							if (result.EmbedThumbnail) {
+								embed.setThumbnail(result.EmbedThumbnail);
 							}
-						});
-					});
+							if (result.EmbedFooter) {
+								let footer = {};
+								footer = {
+									text: '',
+								};
+								if (result.EmbedFooterIcon) {
+									footer.icon_url = result.EmbedFooterIcon;
+								}
+								footer.text = result.EmbedFooter;
+								console.log(footer);
+								embed.setFooter(footer);
+							}
+							if (result.EmbedAuthor) {
+								let author = {};
+								author = {
+									name: '',
+								};
+								if (result.EmbedAuthorIcon) {
+									author.iconURL = result.EmbedAuthorIcon;
+								}
+								if (result.EmbedAuthorURL) {
+									author.url = result.EmbedAuthorURL;
+								}
+								author.name = result.EmbedAuthorName;
+								console.log(author);
+								embed.setAuthor(author);
+							}
+							if (result.URL) {
+								embed.setURL(result.URL);
+							}
+							if (result.EmbedTimestamp) {
+								embed.setTimestamp();
+							}
+							channel.send({ content: result.Message, embeds: [embed] });
+							confirm(result.MessageID);
+						} else {
+							// send message
+							channel.send(result.Message);
+							confirm(result.MessageID);
+						}
+					} else {
+						console.error(`Channel type not supported: ${channel.type}`);
+						logger.error(`Channel type not supported: ${channel.type}`);
+					}
+					// TODO add support for attachments
+					// send message
+					channel.send(result.Message);
 				});
 			});
-		}, 1000 * 60 * 60 * 5);
+			//connection.end();
+		}, 1000 * 60);
 	},
 };
