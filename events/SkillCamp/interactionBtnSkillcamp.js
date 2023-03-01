@@ -44,9 +44,8 @@ module.exports = {
 	name: 'interactionCreate',
 	execute(interaction) {
 		if (!interaction.isButton()) return;
-
-		if (env == "dev") {
-			interaction.reply({ content: 'This command is disabled in dev mode', ephemeral: true });
+		if (env == "development") {
+			interaction.reply({ content: 'This command is disabled in development mode', ephemeral: true });
 			return;
 		}
 
@@ -60,20 +59,37 @@ module.exports = {
 				role = interaction.guild.roles.cache.find(role => role.name === roleName.toLowerCase());
 			}
 			if (!role) {
-				interaction.reply({ content: 'Role not found', ephemeral: true });
-			}
-
-			if (interaction.member.roles.cache.has(role.id)) {
-				interaction.member.roles.remove(role);
-				interaction.reply({ content: `You have been removed from the <@${role.id}> role`, ephemeral: true });
+				interaction.reply({ content: `Role "${roleName}" not found`, ephemeral: true });
+				logger.error(`Role not found: ${roleName} in ${interaction.guild.name}`);
+				// create role
+				interaction.guild.roles.create({
+						name: roleName,
+				}).then(role => {
+					interaction.member.roles.add(role);
+					interaction.editReply({ content: `You have been given the ${role} role`, ephemeral: true });
+				}).catch(error => {
+					logger.error(error);
+					interaction.editReply({ content: 'Something went wrong', ephemeral: true });
+				});
+				return;
 			} else {
-				interaction.member.roles.add(role);
-				interaction.reply({ content: `You have been given the <@${role.id}> role`, ephemeral: true });
+				try {
+					if (interaction.member.roles.cache.has(role.id)) {
+						interaction.member.roles.remove(role);
+						interaction.reply({ content: `You have been removed from the ${role} role`, ephemeral: true });
+					} else {
+						interaction.member.roles.add(role);
+						interaction.reply({ content: `You have been given the ${role} role`, ephemeral: true });
+					}
+				} catch (error) {
+					logger.error(error);
+					interaction.reply({ content: 'Something went wrong', ephemeral: true });
+				}
 			}
 		}
 
 		if (interaction.customId == 'BCpollYes' || interaction.customId == 'BCpollNo' || interaction.customId == 'BCpollMaybe' || interaction.customId == 'BCpollQuestions') {
-			let { BootcampPollData } = require('../data/bootcampPoll.json');
+			let { BootcampPollData } = require('../../data/bootcampPoll.json');
 			BootcampPollData = JSON.parse(BootcampPollData);
 
 			// get guild id
@@ -157,7 +173,7 @@ module.exports = {
 			});
 
 			// save data to json file
-			fs.writeFile(path.join(__dirname, '../data/bootcampPoll.json'), JSON.stringify("\"BootcampPollData\": {" + BootcampPollData + "}", 4, 2), (err) => {
+			fs.writeFile(path.join(__dirname, '../../data/bootcampPoll.json'), JSON.stringify("\"BootcampPollData\": {" + BootcampPollData + "}", 4, 2), (err) => {
 				if (err) {
 					logger.error(err);
 				}
@@ -193,6 +209,8 @@ module.exports = {
 				roleRequest("US-Alaska/Hawaii", interaction);
 			} else if (buttonID == "eu") {
 				roleRequest("Europe", interaction);
+			} else if (buttonID == "uk") {
+				roleRequest("UK", interaction);
 			} else if (buttonID == "ireland") {
 				roleRequest("Ireland", interaction);
 			} else if (buttonID == "italy") {
@@ -258,7 +276,59 @@ module.exports = {
 			}
 
 			if (guildName == "ScriptCamp") {
-				if (buttonID == "3pg") {
+				if (buttonID == "feature") {
+					roleRequest("Feature Films", interaction);
+				} else if (buttonID == "pilot") {
+					roleRequest("TV", interaction);
+				} else if (buttonID == "short") {
+					roleRequest("Shorts", interaction);
+				} else if (buttonID == "plays") {
+					roleRequest("Playwriting", interaction);
+				} else if (buttonID == "novels") {
+					roleRequest("Novels", interaction);
+				} else if (buttonID == "poetry") {
+					roleRequest("Poetry", interaction);
+				} else if (buttonID == "nonfiction") {
+					roleRequest("Non-Fiction", interaction);
+				} else if (buttonID == "shortstories") {
+					roleRequest("Short Stories", interaction);
+				} else if (buttonID == "action") {
+					roleRequest("Action", interaction);
+				} else if (buttonID == "animation") {
+					roleRequest("Animation", interaction);
+				} else if (buttonID == "comedy") {
+					roleRequest("Comedy", interaction);
+				} else if (buttonID == "crime") {
+					roleRequest("Crime", interaction);
+				} else if (buttonID == "darkcomedy") {
+					roleRequest("Dark Comedy", interaction);
+				} else if (buttonID == "drama") {
+					roleRequest("Drama", interaction);
+				} else if (buttonID == "dramedy") {
+					roleRequest("Dramedy", interaction);
+				} else if (buttonID == "fantasy") {
+					roleRequest("Fantasy", interaction);
+				} else if (buttonID == "horror") {
+					roleRequest("Horror", interaction);
+				} else if (buttonID == "musical") {
+					roleRequest("Musical", interaction);
+				} else if (buttonID == "mystery") {
+					roleRequest("Mystery", interaction);
+				} else if (buttonID == "playwriting") {
+					roleRequest("Playwriting", interaction);
+				} else if (buttonID == "psychological") {
+					roleRequest("Psychological Thriller", interaction);
+				} else if (buttonID == "romance") {
+					roleRequest("Romance", interaction);
+				} else if (buttonID == "scifi") {
+					roleRequest("SciFi", interaction);
+				} else if (buttonID == "thriller") {
+					roleRequest("Thriller", interaction);
+				} else if (buttonID == "western") {
+					roleRequest("Western", interaction);
+				} else if (buttonID == "family") {
+					roleRequest("Family/YA", interaction);
+				} else if (buttonID == "3pg") {
 					roleRequest("3 Page Challenge", interaction);
 				} else if (buttonID == "character") {
 					roleRequest('Character Prompter', interaction);

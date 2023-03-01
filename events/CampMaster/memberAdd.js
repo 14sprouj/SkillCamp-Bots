@@ -47,7 +47,7 @@ const SkillCampGuildIds = guildData.guildIDs;
 module.exports = {
 	name: 'guildMemberAdd',
 	execute(member) {
-		if (env == "dev") {
+		if (env == "development") {
 			return;
 		}
 		// Get guild

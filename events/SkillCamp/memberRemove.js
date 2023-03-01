@@ -46,7 +46,7 @@ const SkillCampGuildIds = guildData.guildIDs;
 module.exports = {
 	name: 'guildMemberRemove',
 	execute(member) {
-		if (env == "dev") return;
+		if (env == "development") return;
 		// Get guild
 		const guild = member.guild;
 		const guildId = guild.id;

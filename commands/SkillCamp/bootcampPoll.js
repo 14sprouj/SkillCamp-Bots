@@ -60,12 +60,12 @@ module.exports = {
 			.setDescription('The channel to send the poll in'),
 		),
 	async execute(interaction) {
-		if (env == "dev") {
-			interaction.reply({ content: 'This command is disabled in dev mode', ephemeral: true });
+		if (env == "development") {
+			interaction.reply({ content: 'This command is disabled in development mode', ephemeral: true });
 			return;
 		}
 
-		let channel, message;
+		let channel, message, qchannel;
 		const guildId = interaction.guild.id;
 		console.log(guildId);
 		console.log(SkillCampGuildIds);
@@ -75,7 +75,6 @@ module.exports = {
 		}
 
 		const text = interaction.options.getString('text');
-		let qchannel;
 		if (interaction.options.getChannel('channel') == null) {
 			qchannel = interaction.options.getChannel('channel');
 		} else {
@@ -141,7 +140,7 @@ module.exports = {
 		// open json file
 		const fs = require('fs');
 		const path = require('path');
-		let { BootcampPollData } = require('../data/bootcampPoll.json');
+		let { BootcampPollData } = require('../../data/bootcampPoll.json');
 
 		message.then(message => {
 			interaction.deferReply();

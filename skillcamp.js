@@ -71,7 +71,7 @@ const client = new Client({
 	////	Partials.User,
 	//	Partials.Channel,
 	//],
-	allowedMentions: { parse: ['users', 'roles'] },
+	allowedMentions: { parse: ['users', 'roles', 'everyone'] },
 });
 
 client.commands = new Collection();
@@ -91,7 +91,7 @@ for (const file of commandFiles) {
 }
 logger.info(`Loaded ${i} commands`);
 
-if (env == "dev") {
+if (env == "development") {
 	commandsPath = path.join(__dirname, 'commands/SkillCamp/beta');
 	// get all files in the commands folder that end with .js and do not start with an underscore
 	commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js') && !file.startsWith('._'));
@@ -122,7 +122,7 @@ for (const file of eventFiles) {
 	i++;
 }
 
-if (env == "dev") {
+if (env == "development") {
 	eventsPath = path.join(__dirname, 'events/SkillCamp/beta');
 	eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js') && !file.startsWith('._'));
 

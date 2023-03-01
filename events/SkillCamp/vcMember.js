@@ -44,7 +44,7 @@ const SkillCampGuildIds = guildData.guildIDs;
 module.exports = {
 	name: 'voiceStateUpdate',
 	execute(oldState, newState) {
-		if (env == "dev") return;
+		if (env == "development") return;
 		let embed;
 
 		let logChannel = newState.guild.channels.cache.find(ch => ch.name === 'system-logs');
