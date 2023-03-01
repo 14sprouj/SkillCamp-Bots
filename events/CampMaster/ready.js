@@ -85,15 +85,15 @@ module.exports = {
 							}
 							members.forEach(member => {
 								console.log(`[${guild.name}] Found ${member.user.tag}`);
-
+								let botMember, nitro, booster = 0;
 								connection.query(`SELECT * FROM users WHERE discordUserID = '${member.user.id}'`, (error, results, fields) => {
 									if (error) {
 										console.error(error);
 										logger.error(error);
 										return;
 									}
-									let bot, nitro, booster = 0;
-									if (member.user.bot) bot = 1;
+
+									if (member.user.bot) botMember = 1;
 									if (member.premiumSince) {
 										booster = 1;
 										const bRole = guild.roles.cache.find(role => role.name === 'Server Booster');
@@ -103,7 +103,7 @@ module.exports = {
 										member.roles.remove(bRole);
 									}
 
-									sql = `INSERT INTO users (discordUserID, discordUsername, discordDiscriminator, Bot, Booster) VALUES ('${member.user.id}', '${member.user.username}', '${member.user.discriminator}', ${bot}, ${booster})'`;
+									sql = `INSERT INTO users (discordUserID, discordUsername, discordDiscriminator, Bot, Booster) VALUES ('${member.user.id}', '${member.user.username}', '${member.user.discriminator}', ${botMember}, ${booster})'`;
 									if (results.length == 0) {
 										connection.query(sql, (error, results, fields) => {
 											if (error) {
@@ -135,8 +135,8 @@ module.exports = {
 													}
 												});
 											}
-											if (result.Bot != bot) {
-												connection.query(`UPDATE users SET Bot = ${bot} WHERE discordUserID = '${member.user.id}'`, (error, results, fields) => {
+											if (result.Bot != botMember) {
+												connection.query(`UPDATE users SET Bot = '${botMember}' WHERE discordUserID = '${member.user.id}'`, (error, results, fields) => {
 													if (error) {
 														console.error(error);
 														logger.error(error);
@@ -145,7 +145,7 @@ module.exports = {
 												});
 											}
 											if (result.Booster != booster) {
-												connection.query(`UPDATE users SET Booster = ${booster} WHERE discordUserID = '${member.user.id}'`, (error, results, fields) => {
+												connection.query(`UPDATE users SET Booster = '${booster}' WHERE discordUserID = '${member.user.id}'`, (error, results, fields) => {
 													if (error) {
 														console.error(error);
 														logger.error(error);
