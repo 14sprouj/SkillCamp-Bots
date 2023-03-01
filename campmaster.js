@@ -98,7 +98,7 @@ for (const file of eventFiles) {
 	i++;
 }
 
-if (env == "dev") {
+if (env == "development") {
 	eventsPath = path.join(__dirname, 'events/CampMaster/beta');
 	eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js') && !file.startsWith('._'));
 
