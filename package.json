@@ -18,6 +18,9 @@
 		"pm2-save": "pm2 save",
 		"update": "npm update && npm audit fix && npm fund && npm outdated",
 		"register-all": "node campmaster-register.js && node skillcamp-register.js && node skillcoin-register.js",
+		"register-campmaster": "node campmaster-register.js",
+		"register-skillcamp": "node skillcamp-register.js",
+		"register-skillcoin": "node skillcoin-register.js",
 		"test": "jest",
 		"clear": "node ./clear.js",
 		"lint": "eslint ."
