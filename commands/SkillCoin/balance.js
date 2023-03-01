@@ -136,7 +136,7 @@ module.exports = {
 				const embed = new EmbedBuilder()
 					.setTitle('SkillCoin Balance')
 					.setColor('#998900')
-					.setDescription(`You have <:SkillCoin:1064637226018947182>${coins} SkillCoins`)
+					.setDescription(`You have <:SkillCoin:1080469270951116884>${coins} SkillCoins`)
 					.addFields(
 						{ name: '<:ScriptCamp:1041136882165219339> ScriptCamp', value: `${array[0] | 0}`, inline: true },
 						{ name: "<:WordCamp:1039274617153527839> WordCamp", value: `${array[1] | 0}`, inline: true },

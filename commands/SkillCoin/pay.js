@@ -224,7 +224,7 @@ module.exports = {
 					return;
 				}
 
-				interaction.editReply({ content: `Gave <@${userid}> <:SkillCoin:1064637226018947182>${coins} for ${reason}`, ephemeral: false, fetchReply: true });
+				interaction.editReply({ content: `Gave <@${userid}> <:SkillCoin:1080469270951116884>${coins} for ${reason}`, ephemeral: false, fetchReply: true });
 				coinLogger.info(`${giver} gave ${userid} ${coins} coins for ${reason} in ${camp} using /pay command`);
 			});
 		});

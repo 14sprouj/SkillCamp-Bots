@@ -74,7 +74,7 @@ module.exports = {
 					return;
 				}
 				for (let i = 0; i < result.length; i++) {
-					storeDesc = storeDesc + `\n\n${result[i].Emoji} **${result[i].ItemName}** - <:SkillCoin:1064637226018947182>${result[i].ItemPriceCoin}\n${result[i].ItemDescription}`;
+					storeDesc = storeDesc + `\n\n${result[i].Emoji} **${result[i].ItemName}** - <:SkillCoin:1080469270951116884>${result[i].ItemPriceCoin}\n${result[i].ItemDescription}`;
 				}
 				embed = new EmbedBuilder()
 					.setTitle('SkillCamp Store')

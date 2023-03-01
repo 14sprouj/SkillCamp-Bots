@@ -223,13 +223,13 @@ module.exports = {
 					}
 
 					if (coins > 0) {
-						interaction.editReply({ content: `Gave <@${userid}> <:SkillCoin:1064637226018947182>${coins}`, ephemeral: false, fetchReply: true });
+						interaction.editReply({ content: `Gave <@${userid}> <:SkillCoin:1080469270951116884>${coins}`, ephemeral: false, fetchReply: true });
 						coinLogger.info(`${giver} gave ${userid} ${coins} coins in ${camp} using /add user command`);
 					} else if (coins < 0) {
-						interaction.editReply({ content: `Took <:SkillCoin:1064637226018947182>${coins} from <@${userid}>`, ephemeral: false, fetchReply: true });
+						interaction.editReply({ content: `Took <:SkillCoin:1080469270951116884>${coins} from <@${userid}>`, ephemeral: false, fetchReply: true });
 						coinLogger.info(`${giver} took ${coins} coins from ${userid} in ${camp} using /add user command`);
 					} else {
-						interaction.editReply({ content: `No <:SkillCoin:1064637226018947182> were added or removed from <@${userid}>`, ephemeral: false, fetchReply: true });
+						interaction.editReply({ content: `No <:SkillCoin:1080469270951116884> were added or removed from <@${userid}>`, ephemeral: false, fetchReply: true });
 					}
 				});
 			});
