@@ -22,8 +22,12 @@ const transport2 = new winston.transports.DailyRotateFile({
 	maxSize: '10m',
 });
 
-const transport3 = new winston.transports.DailyRotateFile({
-	level: '',
+const transport3 = new winston.transports.Console({
+	level: 'warn'
+});
+
+const transport4 = new winston.transports.DailyRotateFile({
+	level: 'info',
 	filename: 'logs/SkillCoin/Transactions/%DATE%.log',
 	datePattern: 'YYYY-MM-DD',
 	zippedArchive: true,
@@ -43,6 +47,7 @@ const logger = winston.createLogger({
 	transports: [
 		transport1,
 		transport2,
+		transport3,
 	],
 });
 
@@ -57,7 +62,7 @@ const coinLogger = winston.createLogger({
 		format.json(),
 	),
 	transports: [
-		transport3,
+		transport4,
 	],
 });
 
@@ -219,13 +224,13 @@ module.exports = {
 					}
 
 					if (coins > 0) {
-						interaction.editReply({ content: `Gave <@${userid}> ${coins} coins`, ephemeral: false, fetchReply: true });
-						coinLogger.info(`${giver} gave ${userid} ${coins} coins for ${reason} in ${camp} using /add user command`);
+						interaction.editReply({ content: `Gave <@${userid}> <:SkillCoin:1064637226018947182>${coins}`, ephemeral: false, fetchReply: true });
+						coinLogger.info(`${giver} gave ${userid} ${coins} coins in ${camp} using /add user command`);
 					} else if (coins < 0) {
-						interaction.editReply({ content: `Took ${coins} coins from <@${userid}>`, ephemeral: false, fetchReply: true });
-						coinLogger.info(`${giver} took ${coins} coins from ${userid} for ${reason} in ${camp} using /add user command`);
+						interaction.editReply({ content: `Took <:SkillCoin:1064637226018947182>${coins} from <@${userid}>`, ephemeral: false, fetchReply: true });
+						coinLogger.info(`${giver} took ${coins} coins from ${userid} in ${camp} using /add user command`);
 					} else {
-						interaction.editReply({ content: `No coins were added or removed from <@${userid}>`, ephemeral: false, fetchReply: true });
+						interaction.editReply({ content: `No <:SkillCoin:1064637226018947182> were added or removed from <@${userid}>`, ephemeral: false, fetchReply: true });
 					}
 				});
 			});
@@ -234,9 +239,57 @@ module.exports = {
 			const roleid = role.id;
 
 			const roleHolders = interaction.guild.members.cache.filter(member => member.roles.cache.has(roleid));
+			roleHolders.forEach(async (member) => {
+				const userid = member.id;
+				connection.connect(function (err) {
+					if (err) {
+						logger.error(err);
+						interaction.editReply({ content: 'Error: Unable to connect to the database', ephemeral: true });
+						console.error('Error connecting: ' + err.stack);
+						return;
+					}
+					connection.query(`SELECT * FROM users WHERE discordUserID = '${userid}'`, (error, results, fields) => {
+						if (error) {
+							console.error(error);
+							logger.error(error);
+							return;
+						}
+						if (results.length == 0) {
+							connection.query(`INSERT INTO users (discordUserID, discordUsername, discordDiscriminator) VALUES ('${userid}', '${member.user.username}', '${member.user.discriminator}')`, (error, results, fields) => {
+								if (error) {
+									console.error(error);
+									logger.error(error);
+									return;
+								}
+							});
+						}
 
-			// TODO Add role support
-			// for bootcampers
+						if (results.length > 1) {
+							console.error(`Multiple users with same ID: ${member.user.id}`);
+							logger.error(`Multiple users with same ID: ${member.user.id}`);
+						}
+					});
+					// query database
+					connection.query("INSERT INTO `coinLog` (`UserID`, `Coins`, `Camp`, `SenderID`, `Type`, `Reason`) VALUES ('" + userid + "', '" + coins + "', '" + interaction.guild.id + "', '" + giver + "', 1, 1)", function (err, result) {
+						if (err) {
+							logger.error(err);
+							interaction.editReply({ content: 'Error: Unable to add coins', ephemeral: true });
+							console.error('error connecting: ' + err.stack);
+							return;
+						}
+
+						if (coins > 0) {
+							interaction.editReply({ content: `Gave <@${userid}> ${coins} coins`, ephemeral: false, fetchReply: true });
+							coinLogger.info(`${giver} gave ${userid} ${coins} coins in ${camp} using /add user command`);
+						} else if (coins < 0) {
+							interaction.editReply({ content: `Took ${coins} coins from <@${userid}>`, ephemeral: false, fetchReply: true });
+							coinLogger.info(`${giver} took ${coins} coins from ${userid} in ${camp} using /add user command`);
+						} else {
+							interaction.editReply({ content: `No coins were added or removed from <@${userid}>`, ephemeral: false, fetchReply: true });
+						}
+					});
+				});
+			});
 		} else if (subcommand === 'vc') {
 			// PROD Remove this
 			interaction.reply({ content: 'This command is currently being built and is non-functional', ephemeral: true });

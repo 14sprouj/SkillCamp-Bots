@@ -54,14 +54,38 @@ module.exports = {
 		const guildId = interaction.guild.id;
 		const guildName = interaction.guild.name;
 
-		let embed, row, row2, row3, row4, row5, row6, row7, row8;
+		let embed, row, row2, row3, row4, row5, row6, row7, row8, channel, messages;
 
 		await interaction.reply({ content: 'The roles messages have been sent to the channel!', ephemeral: true });
 
+		channel = guild.channels.cache.find(ch => ch.name === 'rules');
+		messages = await channel.messages.fetch();
+		await messages.forEach(message => message.delete());
+
+		if (guildName === 'CodeCamp') {
+			embed = new EmbedBuilder()
+				.setTitle('Server Rules')
+				.setDescription(`This is a community server. All members must abide by the Discord terms https://discord.com/terms & community guidelines https://discord.com/guidelines. In addition:\n\n1️⃣ Be nice. We don't tolerate hate speech, abusive language, bashing or personal attacks, whether aimed at server members or non-members. Consider that anyone who worked on a film or show may be a member of our server. Help us maintain a respectful and welcoming atmosphere for everyone.\n\n2️⃣ Don’t spam, post NSFW content, advertise, or be a troll.\n\n3️⃣ Swearing is okay within reason, but see rule #1\n\n4️⃣ Offer only constructive criticism to your peers. Approach giving and receiving feedback as part of your professional development.\n\n5️⃣ Don’t share links to pirated or otherwise illegal content. Sharing scripts is fine, as long as the writer is okay with them circulating.\n\n6️⃣ Don’t talk politics in public channels.\n\n7️⃣ We reserve the right to remove someone from the server or cancel their subscription at our sole discretion.`)
+				.setColor('#0a0a0a');
+			await channel.send({ embeds: [embed] });
+		} else if (guildName === 'ScriptCamp') {
+			embed = new EmbedBuilder()
+				.setTitle('Server Rules')
+				.setDescription(`This is a community server. All members must abide by the Discord terms https://discord.com/terms & community guidelines https://discord.com/guidelines. In addition:\n\n1️⃣ Be nice. We don't tolerate hate speech, abusive language, bashing or personal attacks, whether aimed at server members or non-members. Consider that anyone who worked on a film or show may be a member of our server. Help us maintain a respectful and welcoming atmosphere for everyone.\n\n2️⃣ Don’t spam, post NSFW content, advertise, or be a troll.\n\n3️⃣ Swearing is okay within reason, but see rule #1\n\n4️⃣ Offer only constructive criticism to your peers. Approach giving and receiving feedback as part of your professional development.\n\n5️⃣ Don’t share links to pirated or otherwise illegal content. Sharing scripts is fine, as long as the writer is okay with them circulating.\n\n6️⃣ Don’t talk politics in public channels. It’s okay if it comes up now and again (it's a whole genre of movies after all) but heated debates regarding controversial or inappropriate topics should be moved to private conversations.\n\n7️⃣ We reserve the right to remove someone from the server or cancel their subscription at our sole discretion.`)
+				.setColor('#EAB93E');
+			await channel.send({ embeds: [embed] });
+		} else if (guildName === 'WordCamp') {
+			embed = new EmbedBuilder()
+				.setTitle('Server Rules')
+				.setDescription(`This is a community server. All members must abide by the Discord terms https://discord.com/terms & community guidelines https://discord.com/guidelines. In addition:\n\n1️⃣ Be nice. We don't tolerate hate speech, abusive language, bashing or personal attacks, whether aimed at server members or non-members. Consider that anyone who worked on a film or show may be a member of our server. Help us maintain a respectful and welcoming atmosphere for everyone.\n\n2️⃣ Don’t spam, post NSFW content, advertise, or be a troll.\n\n3️⃣ Swearing is okay within reason, but see rule #1\n\n4️⃣ Offer only constructive criticism to your peers. Approach giving and receiving feedback as part of your professional development.\n\n5️⃣ Don’t share links to pirated or otherwise illegal content. Sharing scripts is fine, as long as the writer is okay with them circulating.\n\n6️⃣ Don’t talk politics in public channels.\n\n7️⃣ We reserve the right to remove someone from the server or cancel their subscription at our sole discretion.`)
+				.setColor('#42E8B0');
+			await channel.send({ embeds: [embed] });
+		}
+
 		// get channel
-		const channel = guild.channels.cache.find(ch => ch.name === 'tag-yourself-test');
+		channel = guild.channels.cache.find(ch => ch.name === 'tag-yourself-test');
 		// get all messages in channel
-		const messages = await channel.messages.fetch();
+		messages = await channel.messages.fetch();
 		// for each message delete it
 		await messages.forEach(message => message.delete());
 
@@ -527,7 +551,7 @@ module.exports = {
 				.setDescription('You can also apply to join the following groups!\n**Comedy Pilots Group:** https://forms.gle/bAbnM58cToqUhnKt7 \n**Advanced Lab:** https://forms.gle/w9LJcwqD3MsbYBny5')
 				.setColor('#04FA00');
 			await channel.send({ embeds: [embed] });
-		} else if (guildName == 'CampMaster' || guildName == "CodeCamp") {
+		} else if (guildName == 'CampMaster' || guildName == 'CampCamp' || guildName == "CodeCamp") {
 			embed = new EmbedBuilder()
 				.setTitle('Activities')
 				.setDescription('Click to be notified when an activity is starting')
@@ -702,6 +726,6 @@ module.exports = {
 			.setColor('#ff0000')
 			.setURL(topURL);
 		await channel.send({ embeds: [embed] });
-		logger.info(`${interaction.user.id} in #${interaction.channel.name} used the "/sysmsg roles" command.`);
+		logger.info(`Sent the roles message to #${channel.name} in ${guildName}. Initiated by ${interaction.user.username}#${interaction.user.discriminator} (${interaction.user.id})`);
 	},
 };

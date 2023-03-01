@@ -2,6 +2,8 @@ require('dotenv').config();
 const env = process.env.environment;
 const io = require('@pm2/io');
 const mysql = require('mysql2');
+const fs = require('node:fs');
+const path = require('node:path');
 
 const winston = require('winston');
 const { createLogger, format, transports } = require('winston');
@@ -22,9 +24,13 @@ const transport2 = new winston.transports.DailyRotateFile({
 	maxSize: '10m',
 });
 
-const transport3 = new winston.transports.DailyRotateFile({
-	level: '',
-	filename: 'logs/SkillCoin/Transactions/%DATE%.log',
+const transport3 = new winston.transports.Console({
+	level: 'warn'
+});
+
+const transport4 = new winston.transports.DailyRotateFile({
+	level: 'info',
+	filename: 'logs/SkillCoin/transactions/%DATE%.log',
 	datePattern: 'YYYY-MM-DD',
 	zippedArchive: true,
 	maxSize: '10m',
@@ -43,6 +49,7 @@ const logger = winston.createLogger({
 	transports: [
 		transport1,
 		transport2,
+		transport3,
 	],
 });
 
@@ -57,12 +64,11 @@ const coinLogger = winston.createLogger({
 		format.json(),
 	),
 	transports: [
-		transport3,
+		transport4,
 	],
 });
 
-const fs = require('node:fs');
-const path = require('node:path');
+
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const { REST } = require('@discordjs/rest');
 const formatJsonFiles = require('format-json-files');
@@ -118,7 +124,7 @@ module.exports = {
 
 				// for each row in the result
 				result.forEach(row => {
-					choices.push({ name: row.Reason, value: row.CoinLogReasonID });
+					choices.push({ name: row.Reason, value: `${row.CoinLogReasonID}` });
 				});
 
 				console.log(choices);
@@ -211,7 +217,7 @@ module.exports = {
 				}
 			});
 
-			connection.query("INSERT INTO `coinLog` (`UserID`, `Coins`, `Camp`, `SenderID`, `Reason`, `Type`) VALUES ('" + userid + "', '" + coins + "', '" + camp + "', '" + giver + "', '" + reason + "', 3), ('" + userid + "', '-" + coins + "', '" + camp + "', '" + giver + "', 2, 3);", function (err, result) {
+			connection.query("INSERT INTO `coinLog` (`UserID`, `Coins`, `Camp`, `SenderID`, `Reason`, `Type`) VALUES ('" + userid + "', '" + coins + "', '" + camp + "', '" + giver + "', '" + parseInt(reason) + "', 3), ('" + giver + "', -" + coins + ", '" + camp + "', '" + userid + "', 2, 3);", function (err, result) {
 				if (err) {
 					logger.error(err);
 					interaction.editReply({ content: 'Error: Unable to complete transaction', ephemeral: true });
@@ -219,7 +225,7 @@ module.exports = {
 					return;
 				}
 
-				interaction.editReply({ content: `Gave <@${userid}> ${coins} coins for ${reason}`, ephemeral: false, fetchReply: true });
+				interaction.editReply({ content: `Gave <@${userid}> <:SkillCoin:1064637226018947182>${coins} for ${reason}`, ephemeral: false, fetchReply: true });
 				coinLogger.info(`${giver} gave ${userid} ${coins} coins for ${reason} in ${camp} using /pay command`);
 			});
 		});
