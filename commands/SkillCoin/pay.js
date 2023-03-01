@@ -147,8 +147,7 @@ module.exports = {
 		const camp = interaction.guild.id;
 		let embed;
 		logger.info('${userid} used /pay command');
-		await interaction.deferReply({ ephemeral: true, fetchReply: true });
-		await interaction.editReply({ content: `Giving <@${userid}> ${coins} coins for ${reason}`, ephemeral: false, fetchReply: true });
+		await interaction.reply({ content: `Giving <@${userid}> ${coins} coins for ${reason}`, ephemeral: false, fetchReply: true });
 
 		// connect to the database
 		const connection = mysql.createConnection({

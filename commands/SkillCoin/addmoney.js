@@ -183,8 +183,7 @@ module.exports = {
 		if (subcommand === 'user') {
 			const userid = interaction.options.getUser('user').id;
 			logger.info('${userid} used /addmoney command');
-			await interaction.deferReply({ ephemeral: true, fetchReply: true });
-			await interaction.editReply({ content: `Adding ${coins} coins to <@${userid}>'s balance`, ephemeral: true, fetchReply: true });
+			await interaction.reply({ content: `Adding ${coins} coins to <@${userid}>'s balance`, fetchReply: true });
 
 			connection.connect(function (err) {
 				if (err) {
